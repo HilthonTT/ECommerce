@@ -2,5 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/ECommerce.AppHost/ECommerce.AppHost.csproj" />
     <Project Path="src/ECommerce.ServiceDefaults/ECommerce.ServiceDefaults.csproj" />
+    <Project Path="src/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" Id="f773dd2c-1b06-4326-ae3c-264b5a52cdee" />
+    <Project Path="src/EventBus/EventBus.csproj" Id="03ef6b2f-a382-4b1a-9595-013ba5e76751" />
   </Folder>
 </Solution>

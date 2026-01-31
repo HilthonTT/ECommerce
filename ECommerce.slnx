@@ -18,4 +18,9 @@
     <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Infrastructure/ECommerce.Modules.Ticketing.Infrastructure.csproj" Id="e6dab60e-c1fb-4cc3-b986-8aeca6caef9f" />
     <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Presentation/ECommerce.Modules.Ticketing.Presentation.csproj" Id="06bb12c6-d263-48dc-8754-f2a129a015a3" />
   </Folder>
+  <Folder Name="/src/Python/">
+    <Project Path="src/Python/PythonInference/PythonInference.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="99dd2acb-20cb-4052-93dc-d2037d1f7571">
+      <Build Project="false" />
+    </Project>
+  </Folder>
 </Solution>

@@ -2,7 +2,7 @@
 
 namespace ECommerce.Modules.Ticketing.Domain.Products;
 
-public static class CatalogTypeErrors
+public static class ProductTypeErrors
 {
     public static readonly Error TypeNameIsRequired = Error.Problem(
         "CatalogType.TypeNameIsRequired",

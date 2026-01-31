@@ -2,7 +2,7 @@
 
 namespace ECommerce.Modules.Ticketing.Domain.Products;
 
-public sealed class CatalogTypeUpdatedDomainEvent(Guid catalogTypeId, string type) : DomainEvent
+public sealed class ProductTypeUpdatedDomainEvent(Guid catalogTypeId, string type) : DomainEvent
 {
     public Guid CatalogTypeId { get; } = catalogTypeId;
     public string Type { get; } = type;

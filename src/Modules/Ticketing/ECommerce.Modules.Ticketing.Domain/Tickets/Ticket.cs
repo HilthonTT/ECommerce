@@ -1,5 +1,8 @@
 ﻿using ECommerce.Common.Domain;
 using ECommerce.Common.Domain.Auditing;
+using ECommerce.Modules.Ticketing.Domain.Customers;
+using ECommerce.Modules.Ticketing.Domain.Messages;
+using ECommerce.Modules.Ticketing.Domain.Products;
 
 namespace ECommerce.Modules.Ticketing.Domain.Tickets;
 
@@ -11,6 +14,18 @@ public sealed class Ticket : Entity
     public Guid? ProductId { get; private set; }
 
     public Guid CustomerId { get; private init; }
+
+    /// <summary>
+    /// Gets or sets the customer associated with this entity.
+    /// Used for EFCore Mapping
+    /// </summary>
+    public Customer Customer { get; set; } = default!;
+
+    /// <summary>
+    /// Gets or sets the customer associated with this entity.
+    /// Used for EFCore Mapping
+    /// </summary>
+    public Product Product { get; set; } = default!;
 
     public DateTime CreatedAtUtc { get; private init; }
 
@@ -27,6 +42,8 @@ public sealed class Ticket : Entity
     public TicketType Type { get; private init; }
 
     public bool Archived { get; private set; }
+
+    public List<Message> Messages { get; set; } = [];
 
     private Ticket() { }
 

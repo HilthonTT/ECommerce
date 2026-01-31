@@ -1,0 +1,22 @@
+﻿using ECommerce.Modules.Ticketing.Domain.Customers;
+using ECommerce.Modules.Ticketing.Domain.Messages;
+using ECommerce.Modules.Ticketing.Domain.Products;
+using ECommerce.Modules.Ticketing.Domain.Tickets;
+using Microsoft.EntityFrameworkCore;
+
+namespace ECommerce.Modules.Ticketing.Infrastructure.Database;
+
+public sealed class TicketingDbContext(DbContextOptions<TicketingDbContext> options) : DbContext(options)
+{
+    public DbSet<Customer> Customers { get; set; }
+
+    public DbSet<Ticket> Tickets { get; set; }
+
+    public DbSet<Message> Messages { get; set; }
+
+    public DbSet<Product> Products { get; set; }
+
+    public DbSet<ProductBrand> ProductBrands { get; set; }
+
+    public DbSet<ProductType> ProductTypes { get; set; }
+}

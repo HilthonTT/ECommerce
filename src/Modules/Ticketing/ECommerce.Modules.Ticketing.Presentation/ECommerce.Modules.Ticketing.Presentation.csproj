@@ -7,13 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.AI" Version="10.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\ECommerce.Common.Infrastructure\ECommerce.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Common\ECommerce.Common.Presentation\ECommerce.Common.Presentation.csproj" />
     <ProjectReference Include="..\ECommerce.Modules.Ticketing.Application\ECommerce.Modules.Ticketing.Application.csproj" />
-    <ProjectReference Include="..\ECommerce.Modules.Ticketing.Presentation\ECommerce.Modules.Ticketing.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

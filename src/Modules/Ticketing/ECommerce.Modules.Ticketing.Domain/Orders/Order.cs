@@ -111,6 +111,7 @@ public sealed class Order : Entity
         else
         {
             Result<OrderItem> orderItemResult = OrderItem.Create(
+                Id,
                 productId,
                 productName,
                 unitPrice,

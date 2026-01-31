@@ -19,7 +19,7 @@ public sealed class Product : Entity
     public Guid CatalogTypeId { get; private set; }
 
     public ProductBrand ProductBrand { get; private set; } = default!;
-    public ProductType CatalogType { get; private set; } = default!;
+    public ProductType ProductType { get; private set; } = default!;
 
     [NotMapped, JsonConverter(typeof(EmbeddingJsonConverter))]
     public ReadOnlyMemory<float> NameEmbedding { get; private set; }

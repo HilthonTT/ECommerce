@@ -26,7 +26,10 @@ public abstract class ProcessOutboxJobBase(
 
     public async Task Execute(IJobExecutionContext context)
     {
-        logger.LogInformation("{Module} - Beginning to process outbox messages", ModuleName);
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("{Module} - Beginning to process outbox messages", ModuleName);
+        }
 
         await using var connection = await dbConnectionFactory.OpenConnectionAsync();
         await using var transaction = await connection.BeginTransactionAsync();
@@ -54,7 +57,10 @@ public abstract class ProcessOutboxJobBase(
 
         await transaction.CommitAsync();
 
-        logger.LogInformation("{Module} - Completed processing outbox messages", ModuleName);
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("{Module} - Completed processing outbox messages", ModuleName);
+        }
     }
 
     private async Task PublishDomainEvent(IDomainEvent domainEvent)

@@ -87,7 +87,7 @@ internal sealed class TicketSummarizer(IServiceScopeFactory serviceScopeFactory)
 
                 Here are details of a support ticket.
 
-                Product Type: {{product?.CatalogType.Type ?? "Not specified"}}
+                Product Type: {{product?.ProductType.Type ?? "Not specified"}}
                 Brand: {{product?.ProductBrand.Brand ?? "Not specified"}}
 
                 The message log so far is:

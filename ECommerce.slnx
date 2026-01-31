@@ -11,9 +11,11 @@
     <Project Path="src/Common/ECommerce.Common.Infrastructure/ECommerce.Common.Infrastructure.csproj" Id="250ccca0-c80b-456b-a6bc-f8803fc7b345" />
     <Project Path="src/Common/ECommerce.Common.Presentation/ECommerce.Common.Presentation.csproj" Id="42d4f820-14ad-4a51-a0ef-40b92e470356" />
   </Folder>
-  <Folder Name="/src/Modules/">
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Ticketing/">
     <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Application/ECommerce.Modules.Ticketing.Application.csproj" Id="acb4ccd4-2364-4802-b3ee-2397bec1423f" />
     <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Domain/ECommerce.Modules.Ticketing.Domain.csproj" Id="4cc84c14-2ee6-4808-b580-b5db79c343b0" />
     <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Infrastructure/ECommerce.Modules.Ticketing.Infrastructure.csproj" Id="e6dab60e-c1fb-4cc3-b986-8aeca6caef9f" />
+    <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Presentation/ECommerce.Modules.Ticketing.Presentation.csproj" Id="06bb12c6-d263-48dc-8754-f2a129a015a3" />
   </Folder>
 </Solution>

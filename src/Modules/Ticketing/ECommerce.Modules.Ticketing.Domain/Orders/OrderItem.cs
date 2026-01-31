@@ -6,6 +6,12 @@ namespace ECommerce.Modules.Ticketing.Domain.Orders;
 [Auditable]
 public sealed class OrderItem : Entity
 {
+    public Guid Id { get; private init; }
+
+    public Guid OrderId { get; private set; }
+
+    public Guid ProductId { get; private set; }
+
     public string ProductName { get; private set; }
 
     public string PictureUrl { get; private set; }
@@ -16,11 +22,10 @@ public sealed class OrderItem : Entity
 
     public int Units { get; private set; }
 
-    public Guid ProductId { get; private set; }
-
     private OrderItem() { }
 
     internal static Result<OrderItem> Create(
+        Guid orderId,
         Guid productId, 
         string productName, 
         decimal unitPrice, 
@@ -40,6 +45,8 @@ public sealed class OrderItem : Entity
 
         return new OrderItem
         {
+            Id = Guid.CreateVersion7(),
+            OrderId = orderId,
             ProductId = productId,
             ProductName = productName,
             UnitPrice = unitPrice,

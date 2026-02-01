@@ -39,7 +39,7 @@ public sealed class Ticket : Entity
 
     public TicketStatus Status { get; private set; }
 
-    public TicketType Type { get; private init; }
+    public TicketType Type { get; private set; }
 
     public bool Archived { get; private set; }
 
@@ -84,6 +84,13 @@ public sealed class Ticket : Entity
         LongSummary = longSummary;
 
         return Result.Success();
+    }
+
+    public void UpdateInfo(Guid? productId, TicketType type, TicketStatus status)
+    {
+        ProductId = productId;
+        Type = type;
+        Status = status;
     }
 
     public Result SetCustomerSatisfaction(int satisfaction)

@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Modules.Ticketing.Infrastructure.Database;
 
-public sealed class TicketingDbContext(DbContextOptions<TicketingDbContext> options) : DbContext(options), IUnitOfWork
+public sealed class TicketingDbContext(DbContextOptions<TicketingDbContext> options) 
+    : DbContext(options), IUnitOfWork, IDbContext
 {
     public DbSet<Customer> Customers { get; set; }
 

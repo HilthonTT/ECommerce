@@ -16,6 +16,12 @@ internal sealed class TicketRepository(TicketingDbContext dbContext) : ITicketRe
             .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
+    public Task<Ticket?> GetWithoutIncludeAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return dbContext.Tickets
+            .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+    }
+
     public Task<Ticket?> GetByCode(string code, CancellationToken cancellationToken = default)
     {
         return dbContext.Tickets

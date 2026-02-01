@@ -4,6 +4,10 @@ namespace ECommerce.Modules.Ticketing.Domain.Tickets;
 
 public static class TicketErrors
 {
+    public static Error NotFound(Guid id) => Error.NotFound(
+        "Ticket.NotFound",
+        $"The ticket with the Id = '{id}' was not found.");
+
     public static readonly Error CustomerIdCannotBeEmpty = Error.Problem(
         "Ticket.CustomerIdCannotBeEmpty",
         "Customer ID cannot be empty.");

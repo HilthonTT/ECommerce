@@ -14,5 +14,7 @@ internal sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.Property(customer => customer.LastName).HasMaxLength(200);
 
         builder.HasIndex(customer => customer.Email).IsUnique();
+
+        builder.Ignore(customer => customer.FullName);
     }
 }

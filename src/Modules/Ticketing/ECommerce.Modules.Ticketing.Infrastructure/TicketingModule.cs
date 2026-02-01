@@ -1,8 +1,10 @@
 ﻿using ECommerce.Common.Application.EventBus;
 using ECommerce.Common.Application.Messaging;
+using ECommerce.Common.Application.Sorting;
 using ECommerce.Common.Infrastructure.Database;
 using ECommerce.Common.Presentation.Endpoints;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Data;
+using ECommerce.Modules.Ticketing.Application.Tickets;
 using ECommerce.Modules.Ticketing.Domain.Carts;
 using ECommerce.Modules.Ticketing.Domain.Customers;
 using ECommerce.Modules.Ticketing.Domain.Messages;
@@ -23,6 +25,7 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using static ECommerce.Modules.Ticketing.Application.Tickets.GetTickets.GetTicketsResponse;
 
 namespace ECommerce.Modules.Ticketing.Infrastructure;
 
@@ -36,6 +39,8 @@ public static class TicketingModule
         services
             .AddInfrastructure(configuration)
             .AddEndpoints(Presentation.AssemblyReference.Assembly);
+
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<GetTicketResponseItem, Ticket>>(_ => TicketMappings.SortMapping);
 
         return services;
     }
@@ -58,6 +63,7 @@ public static class TicketingModule
         services
             .AddDbContext<TicketingDbContext>(Postgres.StandardOptions(configuration, Schemas.Ticketing))
             .AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<TicketingDbContext>())
+            .AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<TicketingDbContext>())
             .AddScoped<ICustomerRepository, CustomerRepository>()
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IMessageRepository, MessageRepository>()

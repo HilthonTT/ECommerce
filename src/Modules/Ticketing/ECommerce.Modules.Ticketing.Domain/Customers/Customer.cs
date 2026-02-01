@@ -16,6 +16,8 @@ public sealed class Customer : Entity
 
     public string LastName { get; private set; } = string.Empty;
 
+    public string FullName => $"{FirstName} {LastName}";
+
     public IReadOnlyCollection<PaymentMethod> PaymentMethods => _paymentMethods.AsReadOnly();
 
     private Customer() { }

@@ -11,7 +11,7 @@ internal sealed class PythonInferenceClient(HttpClient httpClient) : IPythonInfe
         CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = await httpClient.PostAsJsonAsync(
-            "/classify",
+            "api/classify",
            new { text, candidate_labels = candidateLabels },
            cancellationToken);
 

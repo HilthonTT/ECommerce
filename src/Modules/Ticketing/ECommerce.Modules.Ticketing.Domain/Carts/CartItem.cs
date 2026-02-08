@@ -4,21 +4,19 @@ namespace ECommerce.Modules.Ticketing.Domain.Carts;
 
 public sealed class CartItem : IValidatableObject
 {
-    public Guid Id { get; set; }
+    public required Guid ProductId { get; set; }
 
-    public Guid ProductId { get; set; }
+    public required string ProductName { get; set; } = string.Empty;
 
-    public string ProductName { get; set; } = string.Empty;
+    public required decimal UnitPrice { get; set; }
 
-    public decimal UnitPrice { get; set; }
+    public required decimal OldUnitPrice { get; set; }
 
-    public decimal OldUnitPrice { get; set; }
+    public required int Quantity { get; set; }
 
-    public int Quantity { get; set; }
+    public required string PictureUrl { get; set; } = string.Empty;
 
-    public string PictureUrl { get; set; } = string.Empty;
-
-    public string Currency { get; set; } = string.Empty;
+    public required string Currency { get; set; } = string.Empty;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

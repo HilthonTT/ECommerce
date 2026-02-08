@@ -3,6 +3,7 @@ using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Application.Sorting;
 using ECommerce.Common.Infrastructure.Database;
 using ECommerce.Common.Presentation.Endpoints;
+using ECommerce.Modules.Ticketing.Application.Abstractions.Authentication;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Data;
 using ECommerce.Modules.Ticketing.Application.Tickets;
 using ECommerce.Modules.Ticketing.Domain.Carts;
@@ -12,6 +13,7 @@ using ECommerce.Modules.Ticketing.Domain.Orders;
 using ECommerce.Modules.Ticketing.Domain.Products;
 using ECommerce.Modules.Ticketing.Domain.Tickets;
 using ECommerce.Modules.Ticketing.Infrastructure.AI;
+using ECommerce.Modules.Ticketing.Infrastructure.Authentication;
 using ECommerce.Modules.Ticketing.Infrastructure.Carts;
 using ECommerce.Modules.Ticketing.Infrastructure.Customers;
 using ECommerce.Modules.Ticketing.Infrastructure.Database;
@@ -52,6 +54,8 @@ public static class TicketingModule
             .AddDatabase(configuration)
             .AddOutbox(configuration)
             .AddInbox(configuration);
+
+        services.AddScoped<ICustomerContext, CustomerContext>();
 
         services.AddHttpClient<PythonInferenceClient>(c => c.BaseAddress = new Uri("http://python-inference"));
 

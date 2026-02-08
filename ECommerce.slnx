@@ -18,6 +18,12 @@
     <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Infrastructure/ECommerce.Modules.Ticketing.Infrastructure.csproj" Id="e6dab60e-c1fb-4cc3-b986-8aeca6caef9f" />
     <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Presentation/ECommerce.Modules.Ticketing.Presentation.csproj" Id="06bb12c6-d263-48dc-8754-f2a129a015a3" />
   </Folder>
+  <Folder Name="/src/Modules/Users/">
+    <Project Path="src/Modules/Users/ECommerce.Modules.Users.IntegrationEvents/ECommerce.Modules.Users.IntegrationEvents.csproj" Id="99f36ce5-ceb2-4090-a095-327a59ab21d7" />
+  </Folder>
+  <Folder Name="/src/Modules/Webhooks/">
+    <Project Path="src/Modules/Webhooks/ECommerce.Webhooks.Domain/ECommerce.Webhooks.Domain.csproj" Id="912edac5-5afd-4608-8cce-848e82aeb54e" />
+  </Folder>
   <Folder Name="/src/Python/">
     <Project Path="src/Python/PythonInference/PythonInference.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="99dd2acb-20cb-4052-93dc-d2037d1f7571">
       <Build Project="false" />

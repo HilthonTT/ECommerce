@@ -1,0 +1,26 @@
+﻿using ECommerce.Common.Application.Messaging;
+using ECommerce.Common.Domain;
+using ECommerce.Modules.Ticketing.Application.Abstractions.Data;
+using ECommerce.Modules.Ticketing.Domain.Orders;
+
+namespace ECommerce.Modules.Ticketing.Application.Orders.SetPaidOrderStatus;
+
+internal sealed class SetPaidOrderCommandHandler(
+    IOrderRepository orderRepository,
+    IUnitOfWork unitOfWork) : ICommandHandler<SetStockConfirmedOrderCommand>
+{
+    public async Task<Result> Handle(SetStockConfirmedOrderCommand command, CancellationToken cancellationToken)
+    {
+        Order? order = await orderRepository.GetAsync(command.OrderId, cancellationToken);
+        if (order is null)
+        {
+            return OrderErrors.NotFound(command.OrderId);
+        }
+
+        order.SetPaidStatus();
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
+    }
+}

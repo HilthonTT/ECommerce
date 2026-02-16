@@ -1,7 +1,13 @@
-﻿using ECommerce.Common.Infrastructure.Database;
+﻿using ECommerce.Common.Application.Sorting;
+using ECommerce.Common.Infrastructure.Database;
 using ECommerce.Common.Presentation.Endpoints;
+using ECommerce.Webhooks.Application.Abstractions.Authentication;
 using ECommerce.Webhooks.Application.Abstractions.Data;
+using ECommerce.Webhooks.Application.Abstractions.Webhooks;
+using ECommerce.Webhooks.Application.Webhooks;
+using ECommerce.Webhooks.Application.Webhooks.GetSubscriptions;
 using ECommerce.Webhooks.Domain.Webhooks;
+using ECommerce.Webhooks.Infrastructure.Authentication;
 using ECommerce.Webhooks.Infrastructure.Database;
 using ECommerce.Webhooks.Infrastructure.Webhooks;
 using Microsoft.Extensions.Configuration;
@@ -17,13 +23,18 @@ public static class WebhooksModule
             .AddInfrastructure(configuration)
             .AddEndpoints(Presentation.AssemblyReference.Assembly);
 
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<WebhookSubscriptionResponse, WebhookSubscription>>(
+            _ => WebhookSubscriptionMappings.SortMapping);
+
         return services;
     }
     private static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDatabase(configuration);
 
-        services.AddScoped<WebhookDispatcher>();
+        services.AddScoped<IWebhookDispatcher, WebhookDispatcher>();
+
+        services.AddScoped<IUserContext, UserContext>();
 
         return services;
     }

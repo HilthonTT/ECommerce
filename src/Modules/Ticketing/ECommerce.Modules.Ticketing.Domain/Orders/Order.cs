@@ -7,6 +7,8 @@ namespace ECommerce.Modules.Ticketing.Domain.Orders;
 [Auditable]
 public sealed class Order : Entity
 {
+    private bool _isDraft;
+
     private readonly List<OrderItem> _orderItems = [];
 
     public Guid Id { get; private init; }
@@ -63,6 +65,16 @@ public sealed class Order : Entity
         }
 
         return Create(customer.Id, address);
+    }
+
+    public static Order NewDraft()
+    {
+        var order = new Order
+        {
+            Id = Guid.CreateVersion7(),
+            _isDraft = true,
+        };
+        return order;
     }
 
     public Result AddItem(

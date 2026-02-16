@@ -4,6 +4,10 @@ namespace ECommerce.Modules.Ticketing.Domain.Orders;
 
 public static class OrderErrors
 {
+    public static Error NotFound(Guid orderId) => Error.Problem(
+        "Order.NotFound",
+        $"Order with ID {orderId} was not found.");
+
     public static readonly Error CustomerIdCannotBeEmpty = Error.Problem(
         "Order.CustomerIdCannotBeEmpty",
         "Customer ID cannot be empty.");

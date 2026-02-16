@@ -1,10 +1,11 @@
-﻿using ECommerce.Webhooks.Infrastructure.OpenTelemetry;
+﻿using ECommerce.Webhooks.Application.Abstractions.Webhooks;
+using ECommerce.Webhooks.Infrastructure.OpenTelemetry;
 using MassTransit;
 using System.Diagnostics;
 
 namespace ECommerce.Webhooks.Infrastructure.Webhooks;
 
-internal sealed class WebhookDispatcher(IPublishEndpoint publishEndpoint)
+internal sealed class WebhookDispatcher(IPublishEndpoint publishEndpoint) : IWebhookDispatcher
 {
     public async Task DispatchAsync<T>(string eventType, T data, CancellationToken cancellationToken = default)
         where T : notnull

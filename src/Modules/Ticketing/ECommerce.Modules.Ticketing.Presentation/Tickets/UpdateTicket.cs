@@ -26,6 +26,6 @@ internal sealed class UpdateTicket : IEndpoint
             return result.Match(Results.NoContent, ApiResults.Problem);
         })
         .WithTags(Tags.Tickets)
-        .RequireAuthorization(Permissions.UpdateTicket);
+        .RequireAuthorization(Permissions.UpdateTickets);
     }
 }

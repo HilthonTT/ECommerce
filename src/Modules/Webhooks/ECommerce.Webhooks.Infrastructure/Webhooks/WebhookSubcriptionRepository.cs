@@ -11,6 +11,14 @@ internal sealed class WebhookSubcriptionRepository(WebhooksDbContext webhooksDbC
         return webhooksDbContext.WebhookSubscriptions.FirstOrDefaultAsync(w => w.Id == id, cancellationToken);
     }
 
+    public Task<bool> ExistsAsync(Guid userId, string eventType, string webhookUrl, CancellationToken cancellationToken = default)
+    {
+        return webhooksDbContext.WebhookSubscriptions.AnyAsync(w =>
+            w.UserId == userId &&
+            w.EventType == eventType &&
+            w.WebhookUrl == webhookUrl, cancellationToken);
+    }
+
     public void Insert(WebhookSubscription subscription)
     {
         webhooksDbContext.WebhookSubscriptions.Add(subscription);

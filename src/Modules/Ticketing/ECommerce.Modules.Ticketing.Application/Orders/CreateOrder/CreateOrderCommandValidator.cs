@@ -75,14 +75,6 @@ internal sealed class CreateOrderCommandValidator : AbstractValidator<CreateOrde
             .WithMessage("Card security code (CVV/CVC) is required.")
             .Matches("^[0-9]{3,4}$")
             .WithMessage("Card security code must be 3 or 4 digits.");
-
-        // Order Items
-        RuleFor(x => x.OrderItems)
-            .NotEmpty()
-            .WithMessage("Order must contain at least one item.");
-
-        RuleForEach(x => x.OrderItems)
-            .SetValidator(new OrderItemDtoValidator());
     }
 
     private static bool BeValidLuhn(string cardNumber)

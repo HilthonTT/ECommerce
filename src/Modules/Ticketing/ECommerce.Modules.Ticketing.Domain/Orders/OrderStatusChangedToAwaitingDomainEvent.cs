@@ -2,10 +2,12 @@
 
 namespace ECommerce.Modules.Ticketing.Domain.Orders;
 
-public sealed class OrderStatusChangedToAwaitingValidationDomainEvent(Guid orderId, List<OrderItem> orderItems) 
+public sealed class OrderStatusChangedToAwaitingDomainEvent(Guid orderId, Guid customerId, List<OrderItem> orderItems) 
     : DomainEvent
 {
     public Guid OrderId { get; } = orderId;
+
+    public Guid CustomerId { get; } = customerId;
 
     public List<OrderItem> OrderItems { get; } = orderItems;
 }

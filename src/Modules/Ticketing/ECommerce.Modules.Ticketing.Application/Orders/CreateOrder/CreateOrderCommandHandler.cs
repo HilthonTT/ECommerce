@@ -1,6 +1,7 @@
 ﻿using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Domain;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Data;
+using ECommerce.Modules.Ticketing.Domain.Carts;
 using ECommerce.Modules.Ticketing.Domain.Customers;
 using ECommerce.Modules.Ticketing.Domain.Orders;
 
@@ -9,8 +10,11 @@ namespace ECommerce.Modules.Ticketing.Application.Orders.CreateOrder;
 internal sealed class CreateOrderCommandHandler(
     ICustomerRepository customerRepository,
     IOrderRepository orderRepository,
-    IUnitOfWork unitOfWork) : ICommandHandler<CreateOrderCommand>
+    IUnitOfWork unitOfWork,
+    ICartService cartService) : ICommandHandler<CreateOrderCommand>
 {
+    private const decimal Discount = 0; // TODO: Add actual discount logic
+
     public async Task<Result> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
         Customer? customer = await customerRepository.GetAsync(command.CustomerId, cancellationToken);
@@ -32,16 +36,18 @@ internal sealed class CreateOrderCommandHandler(
         }
         Order order = orderResult.Value;
 
-        foreach (OrderItemDto item in command.OrderItems)
+        var cart = await cartService.GetAsync(command.CustomerId, cancellationToken);
+
+        foreach (CartItem item in cart.Items)
         {
             order.AddItem(
                 order.Currency, 
                 item.ProductId, 
                 item.ProductName,
-                item.UnitPrice, 
-                item.Discount, 
+                item.UnitPrice,
+                Discount, 
                 item.PictureUrl, 
-                item.Units);
+                item.Quantity);
         }
 
         orderRepository.Insert(order);

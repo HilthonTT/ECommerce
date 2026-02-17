@@ -2,7 +2,9 @@
 
 namespace ECommerce.Modules.Ticketing.Domain.Orders;
 
-public sealed class OrderStatusChangedToStockConfirmedDomainEvent(Guid orderId) : DomainEvent
+public sealed class OrderStatusChangedToStockConfirmedDomainEvent(Guid orderId, Guid customerId) : DomainEvent
 {
     public Guid OrderId { get; } = orderId;
+
+    public Guid CustomerId { get; } = customerId;
 }

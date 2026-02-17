@@ -52,7 +52,7 @@ public sealed class Order : Entity
             CreatedAtUtc = DateTime.UtcNow
         };
 
-        order.RaiseDomainEvent(new OrderCreatedDomainEvent(order.Id));
+        order.RaiseDomainEvent(new OrderCreatedDomainEvent(order.Id, order.CustomerId));
 
         return Result.Success(order);
     }
@@ -181,7 +181,7 @@ public sealed class Order : Entity
         }
 
         Status = OrderStatus.AwaitingValidation;
-        RaiseDomainEvent(new OrderStatusChangedToAwaitingValidationDomainEvent(Id, _orderItems));
+        RaiseDomainEvent(new OrderStatusChangedToAwaitingDomainEvent(Id, CustomerId, _orderItems));
 
         return Result.Success();
     }
@@ -195,7 +195,7 @@ public sealed class Order : Entity
 
         Status = OrderStatus.StockConfirmed;
         Description = "All the items were confirmed with available stock.";
-        RaiseDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id));
+        RaiseDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id, CustomerId));
 
         return Result.Success();
     }
@@ -209,7 +209,7 @@ public sealed class Order : Entity
 
         Status = OrderStatus.Paid;
         Description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
-        RaiseDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, _orderItems));
+        RaiseDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, CustomerId, _orderItems));
 
         return Result.Success();
     }
@@ -223,7 +223,7 @@ public sealed class Order : Entity
 
         Status = OrderStatus.Shipped;
         Description = "The order was shipped.";
-        RaiseDomainEvent(new OrderShippedDomainEvent(Id));
+        RaiseDomainEvent(new OrderShippedDomainEvent(Id, CustomerId));
 
         return Result.Success();
     }
@@ -237,7 +237,7 @@ public sealed class Order : Entity
 
         Status = OrderStatus.Cancelled;
         Description = "The order was cancelled.";
-        RaiseDomainEvent(new OrderCancelledDomainEvent(Id));
+        RaiseDomainEvent(new OrderCancelledDomainEvent(Id, CustomerId));
 
         return Result.Success();
     }

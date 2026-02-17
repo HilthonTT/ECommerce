@@ -12,5 +12,4 @@ public sealed record CreateOrderCommand(
     string CardNumber,
     string CardHolderName,
     DateTime CardExpiration,
-    string CardSecurityNumber,
-    List<OrderItemDto> OrderItems) : ICommand;
+    string CardSecurityNumber) : ICommand;

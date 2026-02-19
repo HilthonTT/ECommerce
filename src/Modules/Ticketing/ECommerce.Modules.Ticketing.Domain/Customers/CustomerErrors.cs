@@ -4,6 +4,10 @@ namespace ECommerce.Modules.Ticketing.Domain.Customers;
 
 public static class CustomerErrors
 {
+    public static readonly Error Unauthorized = Error.Authorization(
+        "Customer.Unauthorized",
+        "You are not authorized to perform this action.");
+
     public static Error NotFound(Guid customerId) =>
         Error.NotFound("Customers.NotFound", $"The customer with the identifier {customerId} not found.");
 

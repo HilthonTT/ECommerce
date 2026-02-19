@@ -5,6 +5,8 @@ using ECommerce.Common.Infrastructure.Database;
 using ECommerce.Common.Presentation.Endpoints;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Authentication;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Data;
+using ECommerce.Modules.Ticketing.Application.Orders;
+using ECommerce.Modules.Ticketing.Application.Orders.GetUserOrders;
 using ECommerce.Modules.Ticketing.Application.Tickets;
 using ECommerce.Modules.Ticketing.Domain.Carts;
 using ECommerce.Modules.Ticketing.Domain.Customers;
@@ -42,7 +44,11 @@ public static class TicketingModule
             .AddInfrastructure(configuration)
             .AddEndpoints(Presentation.AssemblyReference.Assembly);
 
-        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<GetTicketResponseItem, Ticket>>(_ => TicketMappings.SortMapping);
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<GetTicketResponseItem, Ticket>>(
+            _ => TicketMappings.SortMapping);
+
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<OrderSummaryDto, Order>>(
+            _ => OrderMappings.SortMapping);
 
         return services;
     }

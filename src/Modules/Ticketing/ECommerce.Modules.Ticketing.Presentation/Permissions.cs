@@ -10,4 +10,9 @@ internal static class Permissions
     internal const string AddToCart = "carts:add";
     internal const string ViewCart = "carts:view";
     internal const string RemoveFromCart = "carts:remove";
+
+    internal const string CreateOrder = "orders:create";
+    internal const string ViewOrders = "orders:view";
+    internal const string ShipOrder = "orders:ship";
+    internal const string CancelOrder = "orders:cancel";
 }

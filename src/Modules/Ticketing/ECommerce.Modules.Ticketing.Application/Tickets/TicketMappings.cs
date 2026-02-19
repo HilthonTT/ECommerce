@@ -2,7 +2,6 @@
 using ECommerce.Modules.Ticketing.Domain.Customers;
 using ECommerce.Modules.Ticketing.Domain.Products;
 using ECommerce.Modules.Ticketing.Domain.Tickets;
-using System.Linq.Expressions;
 using static ECommerce.Modules.Ticketing.Application.Tickets.GetTickets.GetTicketsResponse;
 
 namespace ECommerce.Modules.Ticketing.Application.Tickets;

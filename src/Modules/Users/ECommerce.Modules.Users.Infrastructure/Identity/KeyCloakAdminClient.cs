@@ -2,7 +2,7 @@
 
 namespace ECommerce.Modules.Users.Infrastructure.Identity;
 
-internal sealed class KeyCloakClient(HttpClient httpClient)
+internal sealed class KeyCloakAdminClient(HttpClient httpClient)
 {
     internal async Task<string> RegisterUserAsync(
         UserRepresentation user,

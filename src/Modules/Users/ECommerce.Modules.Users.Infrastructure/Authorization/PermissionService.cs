@@ -1,14 +1,15 @@
 ﻿using ECommerce.Common.Application.Authorization;
+using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Domain;
+using ECommerce.Modules.Users.Application.Users.GetUserPermissions;
 
 namespace ECommerce.Modules.Users.Infrastructure.Authorization;
 
-internal sealed class PermissionService()
+internal sealed class PermissionService(IQueryHandler<GetUserPermissionsQuery, PermissionResponse> handler)
     : IPermissionService
 {
-    public async Task<Result<PermissionResponse>> GetUserPermissionsAsync(string identityId)
+    public Task<Result<PermissionResponse>> GetUserPermissionsAsync(string identityId)
     {
-        // TODO: Implement this later
-        throw new NotImplementedException();
+        return handler.Handle(new GetUserPermissionsQuery(identityId), CancellationToken.None);
     }
 }

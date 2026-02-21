@@ -49,13 +49,23 @@ public static class UsersModule
             .AddTransient<IIdentityProviderService, KeyCloakIdentityProviderService>();
 
         services.AddTransient<KeyCloakAuthDelegatingHandler>()
-            .AddHttpClient<KeyCloakClient>((serviceProvider, httpClient) =>
+            .AddHttpClient<KeyCloakAdminClient>((serviceProvider, httpClient) =>
             {
                 var keyCloakOptions = serviceProvider.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
                 httpClient.BaseAddress = new Uri(keyCloakOptions.AdminUrl);
             })
             .AddHttpMessageHandler<KeyCloakAuthDelegatingHandler>()
             .AddStandardResilienceHandler();
+
+        services
+            .AddHttpClient<KeyCloakAdminClient>((serviceProvider, httpClient) =>
+            {
+                var keyCloakOptions = serviceProvider.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
+                httpClient.BaseAddress = new Uri(keyCloakOptions.TokenUrl);
+            })
+            .AddStandardResilienceHandler();
+
+        services.AddScoped<IUserContext, UserContext>();
 
         return services;
     }

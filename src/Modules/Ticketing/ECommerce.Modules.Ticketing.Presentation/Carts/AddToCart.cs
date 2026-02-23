@@ -11,7 +11,7 @@ namespace ECommerce.Modules.Ticketing.Presentation.Carts;
 
 internal sealed class AddToCart : IEndpoint
 {
-    private sealed record Request(Guid ProductId, int Quantity);
+    private sealed record Request(int ProductId, int Quantity);
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

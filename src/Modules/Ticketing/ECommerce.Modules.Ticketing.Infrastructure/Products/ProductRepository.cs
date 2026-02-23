@@ -6,7 +6,7 @@ namespace ECommerce.Modules.Ticketing.Infrastructure.Products;
 
 internal sealed class ProductRepository(TicketingDbContext dbContext) : IProductRepository
 {
-    public Task<Product?> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public Task<Product?> GetAsync(int id, CancellationToken cancellationToken = default)
     {
         return dbContext.Products
             .Include(p => p.ProductBrand)

@@ -2,7 +2,7 @@
 
 public sealed class OrderStockItem
 {
-    public Guid ProductId { get; init; }
+    public int ProductId { get; init; }
 
     public int Units { get; init; }
 }

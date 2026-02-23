@@ -2,7 +2,7 @@
 
 public interface IProductRepository
 {
-    Task<Product?> GetAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Product?> GetAsync(int id, CancellationToken cancellationToken = default);
 
     void Insert(Product product);
 

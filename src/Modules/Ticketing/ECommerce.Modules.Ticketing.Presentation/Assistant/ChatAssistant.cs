@@ -11,7 +11,7 @@ namespace ECommerce.Modules.Ticketing.Presentation.Assistant;
 internal sealed class ChatAssistant : IEndpoint
 {
     private sealed record Request(
-        Guid? ProductId,
+        int? ProductId,
         string? CustomerName,
         string? TicketSummary,
         string? TicketLastCustomerMessage,

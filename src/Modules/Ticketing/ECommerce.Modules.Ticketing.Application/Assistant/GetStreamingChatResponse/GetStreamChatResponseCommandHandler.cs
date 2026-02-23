@@ -39,7 +39,6 @@ internal sealed class GetStreamChatResponseCommandHandler(
         string answerText = await StreamAssistantResponseAsync(
             messages,
             response,
-            command.ProductId,
             cancellationToken);
 
         await WriteCustomerClassificationIfApplicableAsync(
@@ -53,7 +52,7 @@ internal sealed class GetStreamChatResponseCommandHandler(
         return Result.Success();
     }
 
-    private async Task<Product?> GetProductIfSpecifiedAsync(Guid? productId, CancellationToken cancellationToken)
+    private async Task<Product?> GetProductIfSpecifiedAsync(int? productId, CancellationToken cancellationToken)
     {
         return productId.HasValue
             ? await productRepository.GetAsync(productId.Value, cancellationToken)
@@ -100,7 +99,6 @@ internal sealed class GetStreamChatResponseCommandHandler(
     private async Task<string> StreamAssistantResponseAsync(
         List<ChatMessage> messages,
         HttpResponse response,
-        Guid? productId,
         CancellationToken cancellationToken)
     {
         var searchManual = AIFunctionFactory.Create(

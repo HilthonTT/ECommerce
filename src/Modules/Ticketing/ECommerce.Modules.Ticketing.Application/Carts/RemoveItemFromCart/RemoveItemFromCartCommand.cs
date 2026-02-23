@@ -2,4 +2,4 @@
 
 namespace ECommerce.Modules.Ticketing.Application.Carts.RemoveItemFromCart;
 
-public sealed record RemoveItemFromCartCommand(Guid CustomerId, Guid ProductId) : ICommand;
+public sealed record RemoveItemFromCartCommand(Guid CustomerId, int ProductId) : ICommand;

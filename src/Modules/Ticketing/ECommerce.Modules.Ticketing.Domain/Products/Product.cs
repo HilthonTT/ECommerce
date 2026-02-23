@@ -8,7 +8,7 @@ namespace ECommerce.Modules.Ticketing.Domain.Products;
 [Auditable]
 public sealed class Product : Entity
 {
-    public Guid Id { get; private init; }
+    public int Id { get; private init; }
     public string Name { get; private set; } = string.Empty;
     public string? Description { get; private set; }
     public decimal Price { get; private set; }
@@ -27,6 +27,7 @@ public sealed class Product : Entity
     private Product() { }
 
     public static Result<Product> Create(
+        int id,
         string name,
         decimal price,
         Guid productBrandId,
@@ -89,7 +90,7 @@ public sealed class Product : Entity
 
         var product = new Product
         {
-            Id = Guid.CreateVersion7(),
+            Id = id,
             Name = name.Trim(),
             Description = description?.Trim(),
             Price = price,

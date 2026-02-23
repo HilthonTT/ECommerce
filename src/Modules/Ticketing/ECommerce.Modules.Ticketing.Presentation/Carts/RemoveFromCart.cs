@@ -11,7 +11,7 @@ namespace ECommerce.Modules.Ticketing.Presentation.Carts;
 
 internal sealed class RemoveFromCart : IEndpoint
 {
-    private sealed record Request(Guid ProductId);
+    private sealed record Request(int ProductId);
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

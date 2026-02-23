@@ -44,9 +44,21 @@ internal sealed class CartService(ICacheService cacheService) : ICartService
         return cart;
     }
 
-    public Task RemoveItemAsync(Guid customerId, Guid ticketTypeId, CancellationToken cancellationToken = default)
+    public async Task RemoveItemAsync(Guid customerId, int productId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        string cacheKey = CreateCacheKey(customerId);
+
+        Cart cart = await GetAsync(customerId, cancellationToken);
+
+        CartItem? cartItem = cart.Items.FirstOrDefault(i => i.ProductId == productId);
+        if (cartItem is null)
+        {
+            return;
+        }
+
+        cart.Items.Remove(cartItem);
+
+        await cacheService.SetAsync(cacheKey, cart, DefaultExpiration, cancellationToken);
     }
 
     private static string CreateCacheKey(Guid customerId) => $"carts:{customerId}";

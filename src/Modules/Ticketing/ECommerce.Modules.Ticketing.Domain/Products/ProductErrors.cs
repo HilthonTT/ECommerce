@@ -4,7 +4,7 @@ namespace ECommerce.Modules.Ticketing.Domain.Products;
 
 public static class ProductErrors
 {
-    public static Error NotFound(Guid productId) => Error.NotFound(
+    public static Error NotFound(int productId) => Error.NotFound(
         "Product.NotFound",
         $"Product with ID '{productId}' was not found.");
 

@@ -79,7 +79,7 @@ public sealed class Order : Entity
 
     public Result AddItem(
         string currency,
-        Guid productId,
+        int productId,
         string productName,
         decimal unitPrice,
         decimal discount,
@@ -149,7 +149,7 @@ public sealed class Order : Entity
         return Result.Success();
     }
 
-    public Result RemoveItem(Guid productId)
+    public Result RemoveItem(int productId)
     {
         if (Status != OrderStatus.Submitted)
         {
@@ -242,7 +242,7 @@ public sealed class Order : Entity
         return Result.Success();
     }
 
-    public Result SetCancelledStatusWhenStockIsRejected(IEnumerable<Guid> orderStockRejectedItems)
+    public Result SetCancelledStatusWhenStockIsRejected(IEnumerable<int> orderStockRejectedItems)
     {
         if (Status != OrderStatus.AwaitingValidation)
         {

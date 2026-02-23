@@ -7,6 +7,12 @@
     <Project Path="src/Common/ECommerce.Common.Presentation/ECommerce.Common.Presentation.csproj" Id="42d4f820-14ad-4a51-a0ef-40b92e470356" />
   </Folder>
   <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Catalog/">
+    <Project Path="src/Modules/Catalog/ECommerce.Modules.Catalog.Application/ECommerce.Modules.Catalog.Application.csproj" Id="1012df4b-8886-4cf6-88eb-b6983b3fcfa5" />
+    <Project Path="src/Modules/Catalog/ECommerce.Modules.Catalog.Domain/ECommerce.Modules.Catalog.Domain.csproj" Id="79c238d6-74f6-4d5d-a50e-805bcd0fd68e" />
+    <Project Path="src/Modules/Catalog/ECommerce.Modules.Catalog.Infrastructure/ECommerce.Modules.Catalog.Infrastructure.csproj" Id="0598417e-6d22-4e04-b202-a91f7ea42130" />
+    <Project Path="src/Modules/Catalog/ECommerce.Modules.Catalog.Presentation/ECommerce.Modules.Catalog.Presentation.csproj" Id="d4aa9c7d-51f6-4f2a-a641-db0045ba6642" />
+  </Folder>
   <Folder Name="/src/Modules/Ticketing/">
     <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Application/ECommerce.Modules.Ticketing.Application.csproj" Id="acb4ccd4-2364-4802-b3ee-2397bec1423f" />
     <Project Path="src/Modules/Ticketing/ECommerce.Modules.Ticketing.Domain/ECommerce.Modules.Ticketing.Domain.csproj" Id="4cc84c14-2ee6-4808-b580-b5db79c343b0" />

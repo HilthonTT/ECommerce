@@ -4,7 +4,7 @@ namespace ECommerce.Modules.Ticketing.Domain.Carts;
 
 public sealed class CartItem : IValidatableObject
 {
-    public required Guid ProductId { get; set; }
+    public required int ProductId { get; set; }
 
     public required string ProductName { get; set; } = string.Empty;
 

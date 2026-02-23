@@ -8,5 +8,5 @@ public interface ICartService
 
     Task AddItemAsync(Guid customerId, CartItem cartItem, CancellationToken cancellationToken = default);
 
-    Task RemoveItemAsync(Guid customerId, Guid ticketTypeId, CancellationToken cancellationToken = default);
+    Task RemoveItemAsync(Guid customerId, int productId, CancellationToken cancellationToken = default);
 }

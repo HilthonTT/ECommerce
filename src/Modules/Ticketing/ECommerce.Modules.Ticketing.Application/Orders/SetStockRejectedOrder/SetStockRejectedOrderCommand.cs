@@ -2,4 +2,4 @@
 
 namespace ECommerce.Modules.Ticketing.Application.Orders.SetStockRejectedOrder;
 
-public sealed record SetStockRejectedOrderCommand(Guid OrderId, List<Guid> OrderStockItems) : ICommand;
+public sealed record SetStockRejectedOrderCommand(Guid OrderId, List<int> OrderStockItems) : ICommand;

@@ -3,7 +3,7 @@
 namespace ECommerce.Modules.Ticketing.Application.Assistant.GetStreamingChatResponse;
 
 public sealed record GetStreamChatResponseCommand(
-    Guid? ProductId, 
+    int? ProductId, 
     string? CustomerName,
     string? TicketSummary, 
     string? TicketLastCustomerMessage,

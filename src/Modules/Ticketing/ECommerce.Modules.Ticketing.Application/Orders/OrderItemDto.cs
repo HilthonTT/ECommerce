@@ -2,7 +2,7 @@
 
 public sealed class OrderItemDto
 {
-    public required Guid ProductId { get; init; }
+    public required int ProductId { get; init; }
 
     public required string ProductName { get; init; }
 

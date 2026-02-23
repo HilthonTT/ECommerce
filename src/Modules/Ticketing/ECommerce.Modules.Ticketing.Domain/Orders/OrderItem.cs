@@ -10,7 +10,7 @@ public sealed class OrderItem : Entity
 
     public Guid OrderId { get; private set; }
 
-    public Guid ProductId { get; private set; }
+    public int ProductId { get; private set; }
 
     public string ProductName { get; private set; }
 
@@ -26,7 +26,7 @@ public sealed class OrderItem : Entity
 
     internal static Result<OrderItem> Create(
         Guid orderId,
-        Guid productId, 
+        int productId, 
         string productName, 
         decimal unitPrice, 
         decimal discount, 

@@ -43,6 +43,7 @@ public static class CatalogModule
         services
             .AddDbContext<CatalogDbContext>(Postgres.StandardOptions(configuration, Schemas.Catalog))
             .AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<CatalogDbContext>())
+            .AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<CatalogDbContext>())
             .AddScoped<ICatalogItemRepository, CatalogItemRepository>()
             .AddScoped<IDbSeeder<CatalogDbContext>, CatalogDbContextSeeder>();
 

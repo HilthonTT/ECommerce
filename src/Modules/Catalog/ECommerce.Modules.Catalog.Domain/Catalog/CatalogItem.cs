@@ -49,7 +49,7 @@ public sealed class CatalogItem : Entity
         int availableStock,
         int restockThreshold,
         int maxStockThreshold,
-        string pictureFileName)
+        string? pictureFileName)
     {
         var item = new CatalogItem
         {

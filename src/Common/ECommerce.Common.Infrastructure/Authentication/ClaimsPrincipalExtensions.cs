@@ -20,6 +20,14 @@ public static class ClaimsPrincipalExtensions
                throw new ECommerceException("User identity is unavailable");
     }
 
+    public static Guid GetUserIdOrEmpty(this ClaimsPrincipal? principal)
+    {
+        var userId = principal?.FindFirstValue(CustomClaims.Sub);
+        return Guid.TryParse(userId, out var parsedUserId)
+            ? parsedUserId
+            : Guid.Empty;
+    }
+
     public static HashSet<string> GetPermissions(this ClaimsPrincipal? principal)
     {
         var permissionClaims = principal?.FindAll(CustomClaims.Permission) ??

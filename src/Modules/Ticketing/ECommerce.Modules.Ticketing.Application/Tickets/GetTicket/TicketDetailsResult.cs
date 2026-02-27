@@ -9,7 +9,7 @@ public sealed record TicketDetailsResult(
     string CustomerFullName,
     string? ShortSummary,
     string? LongSummary,
-    Guid? ProductId,
+    int? ProductId,
     string? ProductBrand,
     string? ProductName,
     TicketType Type,

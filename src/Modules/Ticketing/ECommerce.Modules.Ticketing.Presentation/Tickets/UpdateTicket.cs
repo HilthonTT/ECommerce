@@ -11,7 +11,7 @@ namespace ECommerce.Modules.Ticketing.Presentation.Tickets;
 
 internal sealed class UpdateTicket : IEndpoint
 {
-    private sealed record Request(Guid? ProductId, TicketType Type, TicketStatus Status);
+    private sealed record Request(int? ProductId, TicketType Type, TicketStatus Status);
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

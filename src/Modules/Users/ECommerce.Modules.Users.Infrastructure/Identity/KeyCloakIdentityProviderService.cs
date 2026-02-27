@@ -22,11 +22,11 @@ internal sealed class KeyCloakIdentityProviderService(
 
         try
         {
-            var tokens = await keyCloakTokenClient.LoginUserAsync(
+            AccessTokensResponse tokens = await keyCloakTokenClient.LoginUserAsync(
                 loginRepresentation,
                 cancellationToken);
 
-            return Result.Success(tokens);
+            return tokens;
         }
         catch (HttpRequestException exception) when (exception.StatusCode == HttpStatusCode.Unauthorized)
         {

@@ -12,7 +12,7 @@ namespace ECommerce.Modules.Ticketing.Presentation.Tickets;
 
 internal sealed class CreateTicket : IEndpoint
 {
-    private sealed record Request(Guid? ProductId, string Message);
+    private sealed record Request(int? ProductId, string Message);
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

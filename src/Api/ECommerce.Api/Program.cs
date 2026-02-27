@@ -23,7 +23,9 @@ builder
     .AddCorsPolicy()
     .AddLogging()
     .AddObservability()
-    .AddRateLimiting();
+    .AddRateLimiting()
+    .AddChatCompletionService("chatcompletion")
+    .AddModules(databaseConnectionString, cacheConnectionString);
 
 var keycloakHealthUrl = builder.Configuration.GetValue<string>("KeyCloak:HealthUrl")!;
 
@@ -44,9 +46,9 @@ if (app.Environment.IsDevelopment())
     await app.ApplyMigrationsAsync();
 }
 
-app.UseHttpsRedirection();
-
 app.MapEndpoints();
+
+app.UseHttpsRedirection();
 
 app.MapHealthChecks("health", new HealthCheckOptions
 {

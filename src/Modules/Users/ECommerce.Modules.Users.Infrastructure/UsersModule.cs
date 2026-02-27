@@ -58,7 +58,7 @@ public static class UsersModule
             .AddStandardResilienceHandler();
 
         services
-            .AddHttpClient<KeyCloakAdminClient>((serviceProvider, httpClient) =>
+            .AddHttpClient<KeyCloakTokenClient>((serviceProvider, httpClient) =>
             {
                 var keyCloakOptions = serviceProvider.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
                 httpClient.BaseAddress = new Uri(keyCloakOptions.TokenUrl);

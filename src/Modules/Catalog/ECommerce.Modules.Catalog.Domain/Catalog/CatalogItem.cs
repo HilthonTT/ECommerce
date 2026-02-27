@@ -1,7 +1,6 @@
 ﻿using ECommerce.Common.Domain;
 using ECommerce.Common.Domain.Auditing;
-using Pgvector;
-using System.Text.Json.Serialization;
+using NpgsqlTypes;
 
 namespace ECommerce.Modules.Catalog.Domain.Catalog;
 
@@ -32,10 +31,9 @@ public sealed class CatalogItem : Entity
 
     public int MaxStockThreshold { get; private set; }
 
-    [JsonIgnore]
-    public Vector? Embedding { get; private set; }
-
     public bool OnReorder { get; private set; }
+
+    public NpgsqlTsVector SearchVector { get; set; }
 
     private CatalogItem() { }
 
@@ -161,10 +159,5 @@ public sealed class CatalogItem : Entity
         RaiseDomainEvent(new CatalogItemStockAddedDomainEvent(Id, added, AvailableStock));
 
         return added;
-    }
-
-    public void SetEmbedding(Vector? embedding)
-    {
-        Embedding = embedding;
     }
 }

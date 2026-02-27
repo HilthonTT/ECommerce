@@ -1,15 +1,12 @@
 ﻿using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Domain;
-using ECommerce.Modules.Catalog.Application.Abstractions.AI;
 using ECommerce.Modules.Catalog.Application.Abstractions.Data;
 using ECommerce.Modules.Catalog.Domain.Catalog;
-using Pgvector;
 
 namespace ECommerce.Modules.Catalog.Application.Catalog.CreateItem;
 
 internal sealed class CreateItemCommandHandler(
-    ICatalogItemRepository catalogItemRepository, 
-    ICatalogAI catalogAI,
+    ICatalogItemRepository catalogItemRepository,
     IUnitOfWork unitOfWork) : ICommandHandler<CreateItemCommand, CatalogItemResponse>
 {
     public async Task<Result<CatalogItemResponse>> Handle(
@@ -27,9 +24,6 @@ internal sealed class CreateItemCommandHandler(
             command.RestockThreshold,
             command.MaxStockThreshold,
             command.PictureFileName);
-
-        Vector? embedding = await catalogAI.GetEmbeddingAsync(catalogItem, cancellationToken);
-        catalogItem.SetEmbedding(embedding);
 
         catalogItemRepository.Insert(catalogItem);
 

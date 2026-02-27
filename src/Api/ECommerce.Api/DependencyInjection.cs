@@ -1,4 +1,5 @@
 ﻿using Azure.Monitor.OpenTelemetry.AspNetCore;
+using ECommerce.Api.Extensions;
 using ECommerce.Api.Middleware;
 using ECommerce.Api.Options;
 using ECommerce.Common.Application;
@@ -7,8 +8,10 @@ using ECommerce.Common.Infrastructure.Authentication;
 using ECommerce.Modules.Catalog.Infrastructure;
 using ECommerce.Modules.Ticketing.Infrastructure;
 using ECommerce.Modules.Users.Infrastructure;
+using ECommerce.Webhooks.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.AI;
 using Npgsql;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
@@ -40,10 +43,16 @@ internal static class DependencyInjection
                 TicketingModule.ConfigureConsumers,
                 UsersModule.ConfigureConsumers,
                 CatalogModule.ConfigureConsumers,
-                // TODO: Add webhooks' consumers
+                WebhooksModule.ConfigureConsumers,
             ],
             databaseConnectionString,
             cacheConnectionString);
+
+        builder.Services
+            .AddTicketingModule(builder.Configuration)
+            .AddCatalogModule(builder.Configuration)
+            .AddWebhooksModule(builder.Configuration)
+            .AddUsersModule(builder.Configuration);
 
         return builder;
     }
@@ -165,6 +174,22 @@ internal static class DependencyInjection
                     });
             });
         });
+
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddChatCompletionService(
+        this WebApplicationBuilder builder, 
+        string serviceName)
+    {
+        ChatClientBuilder chatClientBuilder = (builder.Configuration[$"{serviceName}:Type"] == "ollama") ?
+            builder.AddOllamaChatClient(serviceName) :
+            builder.AddOpenAIChatClient(serviceName);
+
+        chatClientBuilder
+            .UseFunctionInvocation()
+            .UseCachingForTest()
+            .UseOpenTelemetry(configure: c => c.EnableSensitiveData = true);
 
         return builder;
     }

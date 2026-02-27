@@ -1,5 +1,4 @@
 ﻿using ECommerce.Common.Infrastructure.Database;
-using ECommerce.Modules.Catalog.Application.Abstractions.AI;
 using ECommerce.Modules.Catalog.Domain.Catalog;
 using ECommerce.Modules.Catalog.Infrastructure.Catalog;
 using Microsoft.AspNetCore.Hosting;
@@ -7,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using Pgvector;
 using System.Text.Json;
 
 namespace ECommerce.Modules.Catalog.Infrastructure.Database;
@@ -15,7 +13,6 @@ namespace ECommerce.Modules.Catalog.Infrastructure.Database;
 internal sealed class CatalogDbContextSeeder(
     IWebHostEnvironment webHostEnvironment,
     IOptions<CatalogOptions> options,
-    ICatalogAI catalogAI,
     ILogger<CatalogDbContextSeeder> logger) : IDbSeeder<CatalogDbContext>
 {
     public async Task SeedAsync(CatalogDbContext context)
@@ -73,20 +70,6 @@ internal sealed class CatalogDbContextSeeder(
                    10,
                    $"{source.Id}.webp"))
                .ToArray();
-
-            if (catalogAI.IsEnabled)
-            {
-                if (logger.IsEnabled(LogLevel.Information))
-                {
-                    logger.LogInformation("Generating {NumItems} embeddings", catalogItems.Length);
-                }
-                IReadOnlyList<Vector>? embeddings = await catalogAI.GetEmbeddingsAsync(catalogItems);
-                for (int i = 0; i < catalogItems.Length; i++)
-                {
-                    catalogItems[i].SetEmbedding(embeddings?[i]);
-                }
-            }
-
 
             await context.CatalogItems.AddRangeAsync(catalogItems);
 

@@ -52,5 +52,7 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(p => p.Name);
+
+        builder.Ignore(p => p.NameEmbedding);
     }
 }

@@ -2,4 +2,4 @@
 
 namespace ECommerce.Modules.Ticketing.Application.Tickets.CreateTicket;
 
-public sealed record CreateTicketCommand(Guid CustomerId, Guid? ProductId, string Message) : ICommand;
+public sealed record CreateTicketCommand(Guid CustomerId, int? ProductId, string Message) : ICommand;

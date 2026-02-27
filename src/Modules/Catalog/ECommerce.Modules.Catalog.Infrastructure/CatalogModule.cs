@@ -2,10 +2,8 @@
 using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Infrastructure.Database;
 using ECommerce.Common.Presentation.Endpoints;
-using ECommerce.Modules.Catalog.Application.Abstractions.AI;
 using ECommerce.Modules.Catalog.Application.Abstractions.Data;
 using ECommerce.Modules.Catalog.Domain.Catalog;
-using ECommerce.Modules.Catalog.Infrastructure.AI;
 using ECommerce.Modules.Catalog.Infrastructure.Catalog;
 using ECommerce.Modules.Catalog.Infrastructure.Database;
 using ECommerce.Modules.Catalog.Infrastructure.Inbox;
@@ -19,7 +17,7 @@ namespace ECommerce.Modules.Catalog.Infrastructure;
 
 public static class CatalogModule
 {
-    public static IServiceCollection AddTicketingModule(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCatalogModule(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDomainEventHandlers();
         services.AddIntegrationEventHandlers();
@@ -34,7 +32,6 @@ public static class CatalogModule
     private static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration) =>
         services
             .Configure<CatalogOptions>(configuration.GetSection("Catalog:Options"))
-            .AddScoped<ICatalogAI, CatalogAI>()
             .AddDatabase(configuration)
             .AddOutbox(configuration)
             .AddInbox(configuration);

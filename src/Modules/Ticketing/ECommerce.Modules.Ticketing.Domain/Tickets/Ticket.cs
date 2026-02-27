@@ -11,7 +11,7 @@ public sealed class Ticket : Entity
 {
     public Guid Id { get; private init; }
 
-    public Guid? ProductId { get; private set; }
+    public int? ProductId { get; private set; }
 
     public Guid CustomerId { get; private init; }
 
@@ -50,7 +50,7 @@ public sealed class Ticket : Entity
     public static Result<Ticket> Create(
         Guid customerId,
         TicketType ticketType,
-        Guid? productId = null)
+        int? productId = null)
     {
         if (customerId == Guid.Empty)
         {
@@ -86,7 +86,7 @@ public sealed class Ticket : Entity
         return Result.Success();
     }
 
-    public void UpdateInfo(Guid? productId, TicketType type, TicketStatus status)
+    public void UpdateInfo(int? productId, TicketType type, TicketStatus status)
     {
         ProductId = productId;
         Type = type;

@@ -23,6 +23,12 @@ internal sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.Property(t => t.ProductId)
             .IsRequired(false);
 
+        builder.HasOne(t => t.Product)
+            .WithMany()
+            .HasForeignKey(t => t.ProductId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
         builder.Property(t => t.CreatedAtUtc)
             .IsRequired();
 

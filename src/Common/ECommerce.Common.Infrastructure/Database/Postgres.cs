@@ -4,22 +4,28 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 
 namespace ECommerce.Common.Infrastructure.Database;
 
 public static class Postgres
 {
-    public static Action<IServiceProvider, DbContextOptionsBuilder> StandardOptions(IConfiguration configuration, string schema) =>
-         (serviceProvider, options) =>
-         {
-             options.UseNpgsql(
-                     configuration.GetConnectionString("Database")!,
-                     optionsBuilder =>
-                     {
-                         optionsBuilder.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schema);
-                     }).UseSnakeCaseNamingConvention()
-                 .AddInterceptors(
-                     serviceProvider.GetRequiredService<InsertOutboxMessagesInterceptor>(),
-                     serviceProvider.GetRequiredService<WriteAuditLogInterceptor>());
-         };
+    public static Action<IServiceProvider, DbContextOptionsBuilder> StandardOptions(
+        IConfiguration configuration,
+        string schema,
+        Action<NpgsqlDbContextOptionsBuilder>? npgsqlOptionsAction = null) =>
+     (serviceProvider, options) =>
+     {
+         options.UseNpgsql(
+                 configuration.GetConnectionString("Database")!,
+                 optionsBuilder =>
+                 {
+                     optionsBuilder.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schema);
+                     npgsqlOptionsAction?.Invoke(optionsBuilder);
+                 })
+             .UseSnakeCaseNamingConvention()
+             .AddInterceptors(
+                 serviceProvider.GetRequiredService<InsertOutboxMessagesInterceptor>(),
+                 serviceProvider.GetRequiredService<WriteAuditLogInterceptor>());
+     };
 }

@@ -3,6 +3,7 @@ using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Application.Sorting;
 using ECommerce.Common.Infrastructure.Database;
 using ECommerce.Common.Presentation.Endpoints;
+using ECommerce.Modules.Ticketing.Application.Abstractions.AI;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Authentication;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Data;
 using ECommerce.Modules.Ticketing.Application.Orders;
@@ -63,7 +64,10 @@ public static class TicketingModule
 
         services.AddScoped<ICustomerContext, CustomerContext>();
 
-        services.AddHttpClient<PythonInferenceClient>(c => c.BaseAddress = new Uri("http://python-inference"));
+        services.AddScoped<ITicketSummarizer, TicketSummarizer>();
+
+        services.AddHttpClient<IPythonInferenceClient, PythonInferenceClient>(
+            c => c.BaseAddress = new Uri("http://python-inference"));
 
         return services;
     }

@@ -11,15 +11,17 @@ internal sealed class CatalogItemConfiguration : IEntityTypeConfiguration<Catalo
         builder.Property(ci => ci.Name)
            .HasMaxLength(50);
 
-        builder.Property(ci => ci.Embedding)
-            .HasColumnType("vector(384)");
-
         builder.HasOne(ci => ci.CatalogBrand)
             .WithMany();
 
         builder.HasOne(ci => ci.CatalogType)
             .WithMany();
 
-        builder.HasIndex(ci => ci.Name);
+        builder.HasGeneratedTsVectorColumn(
+            ci => ci.SearchVector,
+            "english",
+            ci => new { ci.Name, ci.Description, ci.Id })
+        .HasIndex(b => b.SearchVector)
+        .HasMethod("GIN");
     }
 }

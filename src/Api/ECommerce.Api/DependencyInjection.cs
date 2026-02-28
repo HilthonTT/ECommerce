@@ -1,6 +1,4 @@
-﻿using Azure.Monitor.OpenTelemetry.AspNetCore;
-using ECommerce.Api.Extensions;
-using ECommerce.Api.Middleware;
+﻿using ECommerce.Api.Middleware;
 using ECommerce.Api.Options;
 using ECommerce.Common.Application;
 using ECommerce.Common.Infrastructure;
@@ -8,12 +6,13 @@ using ECommerce.Common.Infrastructure.Authentication;
 using ECommerce.Modules.Catalog.Infrastructure;
 using ECommerce.Modules.Ticketing.Infrastructure;
 using ECommerce.Modules.Users.Infrastructure;
+using ECommerce.ServiceDefaults.Clients.ChatCompletion;
 using ECommerce.Webhooks.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.AI;
+using Microsoft.OpenApi;
 using Npgsql;
-using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -101,15 +100,6 @@ internal static class DependencyInjection
             openTelemetryLoggerOptions.IncludeFormattedMessage = true;
         });
 
-        if (builder.Environment.IsDevelopment())
-        {
-            builder.Services.AddOpenTelemetry().UseOtlpExporter();
-        }
-        else
-        {
-            builder.Services.AddOpenTelemetry().UseAzureMonitor();
-        }
-
         return builder;
     }
 
@@ -191,6 +181,17 @@ internal static class DependencyInjection
             .UseCachingForTest()
             .UseOpenTelemetry(configure: c => c.EnableSensitiveData = true);
 
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddApiDocumentation(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "ECommerce API", Version = "v1" });
+            options.CustomSchemaIds(t => t.FullName?.Replace('+', '.'));
+        });
         return builder;
     }
 }

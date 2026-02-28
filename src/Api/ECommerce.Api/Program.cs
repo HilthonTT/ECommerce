@@ -8,6 +8,8 @@ using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Configuration.AddModuleConfiguration([
     "catalog",
     "ticketing",
@@ -25,6 +27,7 @@ builder
     .AddObservability()
     .AddRateLimiting()
     .AddChatCompletionService("chatcompletion")
+    .AddApiDocumentation()
     .AddModules(databaseConnectionString, cacheConnectionString);
 
 var keycloakHealthUrl = builder.Configuration.GetValue<string>("KeyCloak:HealthUrl")!;
@@ -36,6 +39,8 @@ builder.Services
     .AddUrlGroup(new Uri(keycloakHealthUrl), HttpMethod.Get, "Keycloak");
 
 WebApplication app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

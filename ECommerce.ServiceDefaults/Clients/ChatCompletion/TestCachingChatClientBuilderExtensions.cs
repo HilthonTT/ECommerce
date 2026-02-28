@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ECommerce.Api.Extensions;
+namespace ECommerce.ServiceDefaults.Clients.ChatCompletion;
 
 public static class TestCachingChatClientBuilderExtensions
 {
@@ -17,6 +19,9 @@ public static class TestCachingChatClientBuilderExtensions
         });
     }
 
+    /// <summary>
+    /// An <see cref="IDistributedCache"/> that stores data in the filesystem.
+    /// </summary>
     private sealed class DiskCache(string cacheDir) : IDistributedCache
     {
         public byte[]? Get(string key)

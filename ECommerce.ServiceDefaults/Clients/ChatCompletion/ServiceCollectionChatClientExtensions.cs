@@ -1,18 +1,21 @@
 ﻿using Azure.AI.OpenAI;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using OllamaSharp;
 using OpenAI;
 using System.ClientModel;
 using System.Data.Common;
 
-namespace ECommerce.Api.Extensions;
+namespace ECommerce.ServiceDefaults.Clients.ChatCompletion;
 
 public static class ServiceCollectionChatClientExtensions
 {
     public static ChatClientBuilder AddOllamaChatClient(
-       this IHostApplicationBuilder hostBuilder,
-       string serviceName,
-       string? modelName = null)
+        this IHostApplicationBuilder hostBuilder,
+        string serviceName,
+        string? modelName = null)
     {
         if (modelName is null)
         {
@@ -20,8 +23,7 @@ public static class ServiceCollectionChatClientExtensions
             modelName = hostBuilder.Configuration[configKey];
             if (string.IsNullOrEmpty(modelName))
             {
-                throw new InvalidOperationException(
-                    $"No {nameof(modelName)} was specified, and none could be found from configuration at '{configKey}'");
+                throw new InvalidOperationException($"No {nameof(modelName)} was specified, and none could be found from configuration at '{configKey}'");
             }
         }
 
@@ -37,10 +39,8 @@ public static class ServiceCollectionChatClientExtensions
     {
         uri ??= new Uri("http://localhost:11434");
 
-        ChatClientBuilder chatClientBuilder = services.AddChatClient(_ =>
-        {
-            var ollamaClient = new OllamaApiClient(uri, modelName);
-            return ollamaClient;
+        ChatClientBuilder chatClientBuilder = services.AddChatClient(serviceProvider => {
+            return new OllamaApiClient(uri, modelName);
         });
 
         // Temporary workaround for Ollama issues
@@ -68,7 +68,8 @@ public static class ServiceCollectionChatClientExtensions
             ConnectionString = connectionString
         };
         var endpoint = (string?)connectionStringBuilder["endpoint"];
-        var apiKey = (string)connectionStringBuilder["key"] ?? throw new InvalidOperationException($"The connection string named '{serviceName}' does not specify a value for 'Key', but this is required.");
+        var apiKey = (string)connectionStringBuilder["key"] ?? 
+            throw new InvalidOperationException($"The connection string named '{serviceName}' does not specify a value for 'Key', but this is required.");
 
         modelOrDeploymentName ??= (connectionStringBuilder["Deployment"] ?? connectionStringBuilder["Model"]) as string;
         if (string.IsNullOrWhiteSpace(modelOrDeploymentName))

@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ECommerce.ServiceDefaults\ECommerce.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Modules\Catalog\ECommerce.Modules.Catalog.Infrastructure\ECommerce.Modules.Catalog.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Ticketing\ECommerce.Modules.Ticketing.Infrastructure\ECommerce.Modules.Ticketing.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Users\ECommerce.Modules.Users.Infrastructure\ECommerce.Modules.Users.Infrastructure.csproj" />

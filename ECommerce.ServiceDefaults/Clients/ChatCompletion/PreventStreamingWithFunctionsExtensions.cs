@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.AI;
 using System.Runtime.CompilerServices;
 
-namespace ECommerce.Api.Extensions;
+namespace ECommerce.ServiceDefaults.Clients.ChatCompletion;
 
 public static class PreventStreamingWithFunctionsExtensions
 {
@@ -10,10 +10,10 @@ public static class PreventStreamingWithFunctionsExtensions
         return builder.Use(inner => new PreventStreamingWithFunctions(inner));
     }
 
-    private class PreventStreamingWithFunctions(IChatClient innerClient) : DelegatingChatClient(innerClient)
+    private sealed class PreventStreamingWithFunctions(IChatClient innerClient) : DelegatingChatClient(innerClient)
     {
         public override Task<ChatResponse> GetResponseAsync(
-            IEnumerable<ChatMessage> chatMessages, 
+            IEnumerable<ChatMessage> chatMessages,
             ChatOptions? options = null, 
             CancellationToken cancellationToken = default)
         {
@@ -32,14 +32,20 @@ public static class PreventStreamingWithFunctionsExtensions
             return base.GetResponseAsync(chatMessagesArray, options, cancellationToken);
         }
 
-        public override IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> chatMessages, ChatOptions? options = null, CancellationToken cancellationToken = default)
+        public override IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(
+            IEnumerable<ChatMessage> chatMessages, 
+            ChatOptions? options = null, 
+            CancellationToken cancellationToken = default)
         {
             return options?.Tools is null or []
                 ? base.GetStreamingResponseAsync(chatMessages, options, cancellationToken)
                 : TreatNonstreamingAsStreaming(chatMessages, options, cancellationToken);
         }
 
-        private async IAsyncEnumerable<ChatResponseUpdate> TreatNonstreamingAsStreaming(IEnumerable<ChatMessage> chatMessages, ChatOptions options, [EnumeratorCancellation] CancellationToken cancellationToken)
+        private async IAsyncEnumerable<ChatResponseUpdate> TreatNonstreamingAsStreaming(
+            IEnumerable<ChatMessage> chatMessages, 
+            ChatOptions options, 
+            [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var result = await GetResponseAsync(chatMessages, options, cancellationToken);
             foreach (var update in result.ToChatResponseUpdates())

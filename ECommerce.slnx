@@ -3,6 +3,10 @@
   <Folder Name="/src/Api/">
     <Project Path="src/Api/ECommerce.Api/ECommerce.Api.csproj" Id="6d8c9fd1-fbed-46a6-bb2c-09965d36e9d2" />
   </Folder>
+  <Folder Name="/src/Aspire/">
+    <Project Path="ECommerce.AppHost/ECommerce.AppHost.csproj" Id="ebc54b9b-e87d-478b-9dc0-5f62c2c84763" />
+    <Project Path="ECommerce.ServiceDefaults/ECommerce.ServiceDefaults.csproj" />
+  </Folder>
   <Folder Name="/src/Common/">
     <Project Path="src/Common/ECommerce.Common.Application/ECommerce.Common.Application.csproj" Id="3c6d1c51-de58-41b3-aa1a-272821fb45e8" />
     <Project Path="src/Common/ECommerce.Common.Domain/ECommerce.Common.Domain.csproj" Id="8c263716-60f7-46ef-9a99-538ddd28db9a" />

@@ -3,6 +3,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.SemanticKernel.Memory;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
+using ECommerce.ServiceDefaults.Clients;
 
 namespace ECommerce.Common.Infrastructure.AI;
 

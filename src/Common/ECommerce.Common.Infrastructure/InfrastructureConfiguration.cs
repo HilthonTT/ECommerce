@@ -10,14 +10,11 @@ using ECommerce.Common.Infrastructure.Clock;
 using ECommerce.Common.Infrastructure.Data;
 using ECommerce.Common.Infrastructure.Outbox;
 using MassTransit;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using Quartz;
 using StackExchange.Redis;
-using System.Data.Common;
 
 namespace ECommerce.Common.Infrastructure;
 
@@ -87,27 +84,4 @@ public static class InfrastructureConfiguration
 
         return services;
     }
-
-    public static WebApplicationBuilder AddQdrantHttpClient(this WebApplicationBuilder builder, string connectionName)
-    {
-        var connectionString = builder.Configuration.GetConnectionString($"{connectionName}_http");
-        var connectionBuilder = new DbConnectionStringBuilder { ConnectionString = connectionString };
-        var endpoint = new Uri((string)connectionBuilder["endpoint"]);
-        var key = (string)connectionBuilder["key"];
-
-        builder.Services.AddKeyedScoped(GetServiceKey(connectionName), (services, _) =>
-        {
-            var httpClient = services.GetRequiredService<HttpClient>();
-            httpClient.BaseAddress = endpoint;
-            httpClient.DefaultRequestHeaders.Add("api-key", key);
-            return httpClient;
-        });
-
-        return builder;
-    }
-
-    public static HttpClient GetQdrantHttpClient(this IServiceProvider services, string connectionName) => 
-        services.GetRequiredKeyedService<HttpClient>(GetServiceKey(connectionName));
-
-    private static string GetServiceKey(string connectionName) => $"{connectionName}_httpclient";
 }

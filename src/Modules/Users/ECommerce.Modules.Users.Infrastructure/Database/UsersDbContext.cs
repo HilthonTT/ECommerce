@@ -1,5 +1,6 @@
 ﻿using ECommerce.Common.Infrastructure.Database;
 using ECommerce.Modules.Users.Application.Abstractions.Data;
+using ECommerce.Modules.Users.Domain.TwoFactor;
 using ECommerce.Modules.Users.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,8 @@ public sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
     : DbContext(options), IUnitOfWork
 {
     public DbSet<User> Users { get; set; }
+
+    public DbSet<RecoveryCode> RecoveryCodes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

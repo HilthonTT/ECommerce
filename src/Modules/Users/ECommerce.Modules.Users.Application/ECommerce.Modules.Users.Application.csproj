@@ -6,6 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Otp.NET" Version="1.4.1" />
+		<PackageReference Include="QRCoder" Version="1.7.0" />
+	</ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\ECommerce.Common.Application\ECommerce.Common.Application.csproj" />
     <ProjectReference Include="..\ECommerce.Modules.Users.Domain\ECommerce.Modules.Users.Domain.csproj" />

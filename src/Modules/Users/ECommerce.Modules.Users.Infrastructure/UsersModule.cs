@@ -5,12 +5,15 @@ using ECommerce.Common.Infrastructure.Database;
 using ECommerce.Common.Presentation.Endpoints;
 using ECommerce.Modules.Users.Application.Abstractions.Data;
 using ECommerce.Modules.Users.Application.Abstractions.Identity;
+using ECommerce.Modules.Users.Application.Abstractions.TwoFactor;
+using ECommerce.Modules.Users.Domain.TwoFactor;
 using ECommerce.Modules.Users.Domain.Users;
 using ECommerce.Modules.Users.Infrastructure.Authorization;
 using ECommerce.Modules.Users.Infrastructure.Database;
 using ECommerce.Modules.Users.Infrastructure.Identity;
 using ECommerce.Modules.Users.Infrastructure.Inbox;
 using ECommerce.Modules.Users.Infrastructure.Outbox;
+using ECommerce.Modules.Users.Infrastructure.TwoFactor;
 using ECommerce.Modules.Users.Infrastructure.Users;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
@@ -67,6 +70,11 @@ public static class UsersModule
 
         services.AddScoped<IUserContext, UserContext>();
 
+        services.AddSingleton<ITokenService, TokenService>();
+        services.Configure<TwoFactorTokenOptions>(configuration.GetSection(TwoFactorTokenOptions.SectionName));
+
+        services.AddScoped<ITwoFactorService, TwoFactorService>();
+
         return services;
     }
 
@@ -74,7 +82,8 @@ public static class UsersModule
         services
             .AddDbContext<UsersDbContext>(Postgres.StandardOptions(configuration, Schemas.Users))
             .AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<UsersDbContext>())
-            .AddScoped<IUserRepository, UserRepository>();
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IRecoveryCodeRepository, RecoveryCodeRepository>();
 
     private static IServiceCollection AddOutbox(this IServiceCollection services, IConfiguration configuration) =>
         services

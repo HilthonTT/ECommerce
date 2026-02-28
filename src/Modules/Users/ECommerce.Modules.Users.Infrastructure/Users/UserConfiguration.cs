@@ -16,5 +16,10 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasIndex(user => user.Email).IsUnique();
         builder.HasIndex(user => user.IdentityId).IsUnique();
+
+        builder.Property(u => u.PendingTwoFactorSecret).HasMaxLength(500);
+        builder.Property(u => u.PendingTwoFactorSecretKey).HasMaxLength(500);
+        builder.Property(u => u.TwoFactorSecret).HasMaxLength(500);
+        builder.Property(u => u.TwoFactorSecretKey).HasMaxLength(500);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ECommerce.Common.Application.Caching;
 using ECommerce.Common.Application.Clock;
 using ECommerce.Common.Application.Data;
+using ECommerce.Common.Application.Encryption;
 using ECommerce.Common.Application.EventBus;
 using ECommerce.Common.Infrastructure.Auditing;
 using ECommerce.Common.Infrastructure.Authentication;
@@ -8,6 +9,7 @@ using ECommerce.Common.Infrastructure.Authorization;
 using ECommerce.Common.Infrastructure.Caching;
 using ECommerce.Common.Infrastructure.Clock;
 using ECommerce.Common.Infrastructure.Data;
+using ECommerce.Common.Infrastructure.Encryption;
 using ECommerce.Common.Infrastructure.Outbox;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
@@ -81,6 +83,8 @@ public static class InfrastructureConfiguration
                 config.ConfigureEndpoints(context);
             });
         });
+
+        services.TryAddSingleton<IEncryptionService, EncryptionService>();
 
         return services;
     }

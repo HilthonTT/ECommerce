@@ -1,7 +1,6 @@
 ﻿using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Presentation.ApiResults;
 using ECommerce.Common.Presentation.Endpoints;
-using ECommerce.Modules.Users.Application.Abstractions.Identity;
 using ECommerce.Modules.Users.Application.Authentication.LoginUser;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +16,7 @@ internal sealed class LoginUser : IEndpoint
     {
         app.MapPost("auth/login", async (
             Request request,
-            ICommandHandler<LoginUserCommand, AccessTokensResponse> handler,
+            ICommandHandler<LoginUserCommand, LoginResponse> handler,
             CancellationToken cancellationToken) =>
         {
             var command = new LoginUserCommand(request.Email, request.Password);

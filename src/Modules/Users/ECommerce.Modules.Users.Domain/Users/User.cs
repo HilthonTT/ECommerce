@@ -20,6 +20,18 @@ public sealed class User : Entity
 
     public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
 
+    public bool TwoFactorEnabled { get; private set; }
+
+    public string? PendingTwoFactorSecret { get; private set; }
+
+    public string? PendingTwoFactorSecretKey { get; private set; }
+
+    public string? TwoFactorSecret { get; private set; }
+
+    public string? TwoFactorSecretKey { get; private set; }
+
+    public long? LastUsedTimeStep { get; private set; }
+
     private User()
     {
     }
@@ -57,5 +69,38 @@ public sealed class User : Entity
         LastName = lastName;
 
         RaiseDomainEvent(new UserNameChangedDomainEvent(Id, FirstName, LastName));
+    }
+
+    public void SetPendingTwoFactorSecret(string encryptedData, string key)
+    {
+        PendingTwoFactorSecret = encryptedData;
+        PendingTwoFactorSecretKey = key;
+    }
+
+    public void ActivateTwoFactor()
+    {
+        if (PendingTwoFactorSecret is null || PendingTwoFactorSecretKey is null)
+        {
+            throw new InvalidOperationException("No pending 2FA secret to activate.");
+        }
+
+        TwoFactorSecret = PendingTwoFactorSecret;
+        TwoFactorSecretKey = PendingTwoFactorSecretKey;
+        PendingTwoFactorSecret = null;
+        PendingTwoFactorSecretKey = null;
+        TwoFactorEnabled = true;
+    }
+
+    public void UpdateLastUsedTimeStep(long timeStep)
+    {
+        LastUsedTimeStep = timeStep;
+    }
+
+    public void DisableTwoFactor()
+    {
+        TwoFactorEnabled = false;
+        TwoFactorSecret = null;
+        TwoFactorSecretKey = null;
+        LastUsedTimeStep = null;
     }
 }

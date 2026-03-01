@@ -26,6 +26,25 @@ internal static class ValidationDecorator
         }
     }
 
+    internal sealed class QueryHandler<TQuery, TResponse>(
+        IQueryHandler<TQuery, TResponse> innerHandler,
+        IEnumerable<IValidator<TQuery>> validators)
+        : IQueryHandler<TQuery, TResponse>
+        where TQuery : IQuery<TResponse>
+    {
+        public async Task<Result<TResponse>> Handle(TQuery command, CancellationToken cancellationToken)
+        {
+            ValidationFailure[] validationFailures = await ValidateAsync(command, validators);
+
+            if (validationFailures.Length == 0)
+            {
+                return await innerHandler.Handle(command, cancellationToken);
+            }
+
+            return Result.Failure<TResponse>(CreateValidationError(validationFailures));
+        }
+    }
+
     internal sealed class CommandBaseHandler<TCommand>(
         ICommandHandler<TCommand> innerHandler,
         IEnumerable<IValidator<TCommand>> validators)

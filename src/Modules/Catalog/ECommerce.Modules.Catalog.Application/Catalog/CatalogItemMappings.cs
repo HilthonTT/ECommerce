@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace ECommerce.Modules.Catalog.Application.Catalog;
 
-internal static class CatalogItemMappings
+public static class CatalogItemMappings
 {
     public static readonly SortMappingDefinition<CatalogItemResponse, CatalogItem> SortMapping = new()
     {

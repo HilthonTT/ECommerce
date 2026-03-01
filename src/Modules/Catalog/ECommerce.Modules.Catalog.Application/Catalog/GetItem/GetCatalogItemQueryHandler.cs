@@ -13,15 +13,14 @@ internal sealed class GetCatalogItemQueryHandler(IDbContext dbContext)
         GetCatalogItemQuery query,
         CancellationToken cancellationToken)
     {
-        CatalogItem? catalogItem = await dbContext.CatalogItems
+        CatalogItemResponse? response = await dbContext.CatalogItems
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == query.Id, cancellationToken);
+            .Where(c => c.Id == query.Id)
+            .Select(CatalogItemMappings.ProjectToResponse())
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (catalogItem is null)
-        {
-            return CatalogItemErrors.NotFound(query.Id);
-        }
-
-        return catalogItem.ToResponse();
+        return response is null
+            ? CatalogItemErrors.NotFound(query.Id)
+            : response;
     }
 }

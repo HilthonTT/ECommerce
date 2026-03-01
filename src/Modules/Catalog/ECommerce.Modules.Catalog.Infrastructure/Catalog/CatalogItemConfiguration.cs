@@ -12,10 +12,12 @@ internal sealed class CatalogItemConfiguration : IEntityTypeConfiguration<Catalo
            .HasMaxLength(50);
 
         builder.HasOne(ci => ci.CatalogBrand)
-            .WithMany();
+            .WithMany()
+            .HasForeignKey(ci => ci.CatalogBrandId);
 
         builder.HasOne(ci => ci.CatalogType)
-            .WithMany();
+            .WithMany()
+            .HasForeignKey(CI => CI.CatalogTypeId);
 
         builder.HasGeneratedTsVectorColumn(
             ci => ci.SearchVector,

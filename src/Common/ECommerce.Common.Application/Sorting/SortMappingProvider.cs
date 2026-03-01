@@ -11,13 +11,9 @@ internal sealed class SortMappingProvider(IEnumerable<ISortMappingDefinition> so
             .OfType<SortMappingDefinition<TSource, TDestination>>()
             .FirstOrDefault();
 
-        if (sortMappingDefinition is null)
-        {
-            throw new InvalidOperationException(
-                $"The mapping from '{typeof(TSource).Name}' into '{typeof(TDestination).Name}' is not defined.");
-        }
-
-        return sortMappingDefinition.Mappings;
+        return sortMappingDefinition is null
+            ? throw new InvalidOperationException($"The mapping from '{typeof(TSource).Name}' into '{typeof(TDestination).Name}' is not defined.")
+            : sortMappingDefinition.Mappings;
     }
 
     public Result ValidateMappings<TSource, TDestination>(string? sort)

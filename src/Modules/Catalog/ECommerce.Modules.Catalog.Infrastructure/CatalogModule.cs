@@ -1,8 +1,10 @@
 ﻿using ECommerce.Common.Application.EventBus;
 using ECommerce.Common.Application.Messaging;
+using ECommerce.Common.Application.Sorting;
 using ECommerce.Common.Infrastructure.Database;
 using ECommerce.Common.Presentation.Endpoints;
 using ECommerce.Modules.Catalog.Application.Abstractions.Data;
+using ECommerce.Modules.Catalog.Application.Catalog;
 using ECommerce.Modules.Catalog.Domain.Catalog;
 using ECommerce.Modules.Catalog.Infrastructure.Catalog;
 using ECommerce.Modules.Catalog.Infrastructure.Database;
@@ -29,12 +31,20 @@ public static class CatalogModule
         return services;
     }
 
-    private static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration) =>
+    private static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
         services
             .Configure<CatalogOptions>(configuration.GetSection("Catalog:Options"))
             .AddDatabase(configuration)
             .AddOutbox(configuration)
             .AddInbox(configuration);
+
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<CatalogItemResponse, CatalogItem>>(
+            _ => CatalogItemMappings.SortMapping);
+
+        return services;
+    }
+        
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration) =>
         services

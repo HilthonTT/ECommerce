@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Setup\catalog.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.4.0" />
@@ -38,6 +42,10 @@
     <ProjectReference Include="..\..\Modules\Ticketing\ECommerce.Modules.Ticketing.Infrastructure\ECommerce.Modules.Ticketing.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Users\ECommerce.Modules.Users.Infrastructure\ECommerce.Modules.Users.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Webhooks\ECommerce.Webhooks.Infrastructure\ECommerce.Webhooks.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Setup\catalog.json" />
   </ItemGroup>
 
 </Project>

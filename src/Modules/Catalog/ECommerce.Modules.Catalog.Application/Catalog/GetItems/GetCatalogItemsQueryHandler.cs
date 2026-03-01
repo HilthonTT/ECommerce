@@ -15,21 +15,12 @@ internal sealed class GetCatalogItemsQueryHandler(
     : IQueryHandler<GetCatalogItemsQuery, PaginationResult<CatalogItemResponse>>
 {
     public async Task<Result<PaginationResult<CatalogItemResponse>>> Handle(
-    GetCatalogItemsQuery query,
-    CancellationToken cancellationToken)
+        GetCatalogItemsQuery query,
+        CancellationToken cancellationToken)
     {
+        var sortMappings = sortMappingProvider.GetMappings<CatalogItemResponse, CatalogItem>();
+
         IQueryable<CatalogItem> catalogItemQuery = dbContext.CatalogItems.AsQueryable();
-        bool usingTextSearch = false;
-
-        if (!string.IsNullOrWhiteSpace(query.SearchTerm))
-        {
-            var tsQuery = EF.Functions.PhraseToTsQuery("english", query.SearchTerm);
-
-            catalogItemQuery = catalogItemQuery
-                .Where(c => c.SearchVector.Matches(tsQuery));
-
-            usingTextSearch = true;
-        }
 
         if (query.CatalogBrandId.HasValue)
         {
@@ -41,31 +32,25 @@ internal sealed class GetCatalogItemsQueryHandler(
             catalogItemQuery = catalogItemQuery.Where(c => c.CatalogTypeId == query.CatalogTypeId.Value);
         }
 
-        var sortMappings = sortMappingProvider.GetMappings<CatalogItemResponse, CatalogItem>();
-
-        IQueryable<CatalogItemResponse> responseQuery;
-
-        if (usingTextSearch)
-        {
-            var tsQuery = EF.Functions.PhraseToTsQuery("english", query.SearchTerm!);
-
-            responseQuery = catalogItemQuery
-                .OrderByDescending(c => c.SearchVector.Rank(tsQuery))
-                .Select(CatalogItemMappings.ProjectToResponse());
-        }
-        else
-        {
-            responseQuery = catalogItemQuery
+        IQueryable<CatalogItemResponse> responseQuery = !string.IsNullOrWhiteSpace(query.SearchTerm)
+            ? BuildTextSearchQuery(catalogItemQuery, query.SearchTerm)
+            : catalogItemQuery
                 .ApplySort(query.Sort, sortMappings)
                 .Select(CatalogItemMappings.ProjectToResponse());
-        }
 
-        var paginationResult = await PaginationResult<CatalogItemResponse>.CreateAsync(
+        return await PaginationResult<CatalogItemResponse>.CreateAsync(
             responseQuery,
             query.Page,
             query.PageSize,
             cancellationToken);
-
-        return paginationResult;
     }
+
+    private static IQueryable<CatalogItemResponse> BuildTextSearchQuery(
+        IQueryable<CatalogItem> source,
+        string searchTerm) =>
+        source
+            .Where(c => c.SearchVector.Matches(EF.Functions.PlainToTsQuery("english", searchTerm)))
+            .OrderByDescending(c => c.SearchVector.Rank(EF.Functions.PlainToTsQuery("english", searchTerm)))
+            .ThenBy(c => c.Id)
+            .Select(CatalogItemMappings.ProjectToResponse());
 }

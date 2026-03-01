@@ -32,7 +32,7 @@ if (builder.Environment.IsDevelopment())
 
 var blobStorage = storage.AddBlobs("eshopsupport-blobs");
 
-builder.AddProject<Projects.ECommerce_Api>("ecommerce-api")
+var api = builder.AddProject<Projects.ECommerce_Api>("ecommerce-api")
     .WithSwaggerUI()
     .WithScalar()
     .WithRedoc()
@@ -44,5 +44,9 @@ builder.AddProject<Projects.ECommerce_Api>("ecommerce-api")
     .WaitFor(postgres)
     .WaitFor(redis)
     .WaitFor(storage);
+
+builder.AddProject<Projects.ECommerce_WebApp>("ecommerce-webapp")
+    .WithReference(api)
+    .WaitFor(api);
 
 await builder.Build().RunAsync();

@@ -15,7 +15,7 @@ internal sealed class GetItems : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("items", async (
+        app.MapGet("catalog/items", async (
             [FromQuery] int page,
             [FromQuery] int pageSize,
             [FromQuery(Name = "q")] string? searchTerm,

@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace ECommerce.Common.Application.DTOs;
 
 public sealed record PaginationResult<T> : ICollectionResponse<T>
 {
+    [JsonConstructor]
     private PaginationResult()
     {
     }

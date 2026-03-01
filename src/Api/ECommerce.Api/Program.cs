@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using Asp.Versioning.Builder;
 using ECommerce.Api;
 using ECommerce.Api.Extensions;
 using ECommerce.Api.Options;
@@ -28,7 +30,8 @@ builder
     .AddRateLimiting()
     .AddChatCompletionService("chatcompletion")
     .AddApiDocumentation()
-    .AddModules(databaseConnectionString, cacheConnectionString);
+    .AddModules(databaseConnectionString, cacheConnectionString)
+    .AddApiVersioning();
 
 var keycloakHealthUrl = builder.Configuration.GetValue<string>("KeyCloak:HealthUrl")!;
 
@@ -42,6 +45,17 @@ WebApplication app = builder.Build();
 
 app.MapDefaultEndpoints();
 
+ApiVersionSet apiVersionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1))
+    .ReportApiVersions()
+    .Build();
+
+RouteGroupBuilder versionedGroup = app
+    .MapGroup("api/v{version:apiVersion}")
+    .WithApiVersionSet(apiVersionSet);
+
+app.MapEndpoints(versionedGroup);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -51,8 +65,6 @@ if (app.Environment.IsDevelopment())
     await app.ApplyMigrationsAsync();
     await app.InvokeSeedAsync();
 }
-
-app.MapEndpoints();
 
 app.UseHttpsRedirection();
 

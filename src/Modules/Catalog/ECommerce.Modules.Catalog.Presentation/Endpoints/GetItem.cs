@@ -13,7 +13,7 @@ internal sealed class GetItem : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("items/{id:int}", async (
+        app.MapGet("catalog/items/{id:int}", async (
             int id,
             IQueryHandler<GetCatalogItemQuery, CatalogItemResponse> handler,
             CancellationToken cancellationToken) =>

@@ -25,7 +25,7 @@ internal sealed class CreateItem : IEndpoint
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("items", async (
+        app.MapPost("catalog/items", async (
             Request request,
             ICommandHandler <CreateItemCommand, CatalogItemResponse> handler,
             CancellationToken cancellationToken) =>

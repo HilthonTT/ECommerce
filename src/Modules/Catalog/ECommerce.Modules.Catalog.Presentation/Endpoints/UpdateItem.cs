@@ -14,7 +14,7 @@ internal sealed class UpdateItem : IEndpoint
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut("items/{id:int}", async (
+        app.MapPut("catalog/items/{id:int}", async (
             int id,
             Request request,
             ICommandHandler<UpdateItemCommand> handler,

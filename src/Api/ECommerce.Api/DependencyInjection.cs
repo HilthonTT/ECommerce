@@ -1,8 +1,10 @@
-﻿using ECommerce.Api.Middleware;
+﻿using Asp.Versioning;
+using ECommerce.Api.Middleware;
 using ECommerce.Api.Options;
 using ECommerce.Common.Application;
 using ECommerce.Common.Infrastructure;
 using ECommerce.Common.Infrastructure.Authentication;
+using ECommerce.Modules.Catalog.Application;
 using ECommerce.Modules.Catalog.Infrastructure;
 using ECommerce.Modules.Ticketing.Infrastructure;
 using ECommerce.Modules.Users.Infrastructure;
@@ -37,6 +39,7 @@ internal static class DependencyInjection
                 Modules.Ticketing.Application.AssemblyReference.Assembly,
                 Modules.Users.Application.AssemblyReference.Assembly
             ])
+            .AddCatalogApplication()
             .AddInfrastructure(
             [
                 TicketingModule.ConfigureConsumers,
@@ -192,6 +195,21 @@ internal static class DependencyInjection
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "ECommerce API", Version = "v1" });
             options.CustomSchemaIds(t => t.FullName?.Replace('+', '.'));
         });
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddApiVersioning(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1);
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        }).AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'V";
+            options.SubstituteApiVersionInUrl = true;
+        });
+
         return builder;
     }
 }

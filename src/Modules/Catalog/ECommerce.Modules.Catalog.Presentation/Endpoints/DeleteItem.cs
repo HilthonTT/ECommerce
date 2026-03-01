@@ -12,7 +12,7 @@ internal sealed class DeleteItem : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("items/{id:int}", async (
+        app.MapDelete("catalog/items/{id:int}", async (
             int id,
             ICommandHandler<DeleteItemCommand> handler,
             CancellationToken cancellationToken) =>

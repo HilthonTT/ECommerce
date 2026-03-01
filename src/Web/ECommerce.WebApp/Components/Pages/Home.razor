@@ -1,0 +1,87 @@
+﻿@page "/"
+@using ECommerce.WebApp.Features.Catalog.Models
+@using ECommerce.WebApp.Features.Catalog.Services
+@using System.Net
+@inject ICatalogService CatalogService
+
+<PageTitle>Catalog Item</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            @if (isLoading)
+            {
+                <div class="text-center py-5 text-muted">
+                    <div class="spinner-border mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Loading item...</p>
+                </div>
+            }
+            else if (notFound)
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    Item #@CatalogItemId was not found.
+                </div>
+            }
+            else if (item is not null)
+            {
+                <div class="card shadow-sm">
+
+                    @if (!string.IsNullOrEmpty(item.PictureUrl))
+                    {
+                        <img src="@item.PictureUrl" class="card-img-top"
+                             alt="@item.Name" style="height: 280px; object-fit: cover;" />
+                    }
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h4 class="card-title mb-0">@item.Name</h4>
+                            <span class="badge bg-primary ms-2">@item.CatalogType.Type</span>
+                        </div>
+
+                        <p class="card-text text-muted">@item.Description</p>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">
+                                Brand: <strong class="text-dark">@item.CatalogBrand.Brand</strong>
+                            </span>
+                            <span class="fs-4 fw-bold text-success">
+                                $@item.Price.ToString("0.00")
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private const int CatalogItemId = 93;
+    private CatalogItem? item;
+    private bool notFound;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            item = await CatalogService.GetCatalogItem(CatalogItemId);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            notFound = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

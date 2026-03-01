@@ -12,7 +12,7 @@ internal sealed class GetItemByPicture : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("items/{id:int}/picture", async (
+        app.MapGet("catalog/items/{id:int}/picture", async (
             int id,
             IQueryHandler<GetItemPictureQuery, PhysicalFileResponse> handler,
             CancellationToken cancellationToken) =>

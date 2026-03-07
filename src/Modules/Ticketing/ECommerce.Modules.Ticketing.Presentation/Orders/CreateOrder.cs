@@ -20,7 +20,8 @@ internal sealed class CreateOrder : IEndpoint
         string CardNumber,
         string CardHolderName,
         DateTime CardExpiration,
-        string CardSecurityNumber);
+        string CardSecurityNumber,
+        string? CouponCode);
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -40,7 +41,8 @@ internal sealed class CreateOrder : IEndpoint
                 request.CardNumber,
                 request.CardHolderName,
                 request.CardExpiration,
-                request.CardSecurityNumber);
+                request.CardSecurityNumber,
+                request.CouponCode);
 
             var result = await handler.Handle(command, cancellationToken);
             return result.Match(Results.NoContent, ApiResults.Problem);

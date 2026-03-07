@@ -1,11 +1,11 @@
 {
   "Users": {
     "KeyCloak": {
-      "AdminUrl": "http://evently.identity:8080/admin/realms/evently/",
-      "TokenUrl": "http://evently.identity:8080/realms/evently/protocol/openid-connect/token",
-      "ConfidentialClientId": "evently-confidential-client",
-      "ConfidentialClientSecret": "1anQtMszBLyFhvNuhQBIXfFqVFhArjpO",
-      "PublicClientId": "evently-public-client"
+      "AdminUrl": "http://localhost:8080/admin/realms/ecommerce/",
+      "TokenUrl": "http://localhost:8080/realms/ecommerce/protocol/openid-connect/token",
+      "ConfidentialClientId": "ecommerce-confidential-client",
+      "ConfidentialClientSecret": "8OV9KisvxjLKOjy1WSk5OS1oet3cU28j",
+      "PublicClientId": "ecommerce-public-client"
     },
     "Outbox": {
       "IntervalInSeconds": 15,

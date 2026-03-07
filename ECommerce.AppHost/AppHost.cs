@@ -15,7 +15,7 @@ var redis = builder.AddRedis("ecommerce-redis")
 
 var chatCompletion = builder.AddOllama("chatcompletion").WithDataVolume();
 
-var keycloak = builder.AddKeycloakContainer("ecommerce-keycloak")
+var keycloak = builder.AddKeycloakContainer("ecommerce-keycloak", port: 8080)
     .WithDataVolume();
 
 var storage = builder.AddAzureStorage("ecommerce-storage");
@@ -33,6 +33,7 @@ if (builder.Environment.IsDevelopment())
 var blobStorage = storage.AddBlobs("eshopsupport-blobs");
 
 var api = builder.AddProject<Projects.ECommerce_Api>("ecommerce-api")
+    .WithExternalHttpEndpoints()
     .WithSwaggerUI()
     .WithScalar()
     .WithRedoc()

@@ -20,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using System.Net;
 
 namespace ECommerce.Modules.Users.Infrastructure;
 
@@ -58,7 +59,17 @@ public static class UsersModule
                 httpClient.BaseAddress = new Uri(keyCloakOptions.AdminUrl);
             })
             .AddHttpMessageHandler<KeyCloakAuthDelegatingHandler>()
-            .AddStandardResilienceHandler();
+            .AddStandardResilienceHandler(options =>
+            {
+                options.Retry.ShouldHandle = args => ValueTask.FromResult(
+                    args.Outcome switch
+                    {
+                        { Result.StatusCode: HttpStatusCode.TooManyRequests } => false,
+                        { Result.StatusCode: >= HttpStatusCode.InternalServerError } => true,
+                        { Exception: not null } => true,
+                        _ => false
+                    });
+            });
 
         services
             .AddHttpClient<KeyCloakTokenClient>((serviceProvider, httpClient) =>
@@ -66,7 +77,17 @@ public static class UsersModule
                 var keyCloakOptions = serviceProvider.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
                 httpClient.BaseAddress = new Uri(keyCloakOptions.TokenUrl);
             })
-            .AddStandardResilienceHandler();
+            .AddStandardResilienceHandler(options =>
+            {
+                options.Retry.ShouldHandle = args => ValueTask.FromResult(
+                    args.Outcome switch
+                    {
+                        { Result.StatusCode: HttpStatusCode.TooManyRequests } => false,
+                        { Result.StatusCode: >= HttpStatusCode.InternalServerError } => true,
+                        { Exception: not null } => true,
+                        _ => false
+                    });
+            });
 
         services.AddScoped<IUserContext, UserContext>();
 

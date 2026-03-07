@@ -19,6 +19,11 @@ internal sealed class UserRepository(UsersDbContext dbContext, IEncryptionServic
 
     public void Insert(User user)
     {
+        foreach (Role role in user.Roles)
+        {
+            dbContext.Attach(role);
+        }
+
         dbContext.Users.Add(user);
     }
 

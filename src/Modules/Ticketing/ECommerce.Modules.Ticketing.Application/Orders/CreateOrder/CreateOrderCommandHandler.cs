@@ -4,17 +4,19 @@ using ECommerce.Modules.Ticketing.Application.Abstractions.Data;
 using ECommerce.Modules.Ticketing.Domain.Carts;
 using ECommerce.Modules.Ticketing.Domain.Customers;
 using ECommerce.Modules.Ticketing.Domain.Orders;
+using ECommerce.Modules.Ticketing.Domain.Pricing;
+using ECommerce.Modules.Ticketing.Domain.Products;
 
 namespace ECommerce.Modules.Ticketing.Application.Orders.CreateOrder;
 
 internal sealed class CreateOrderCommandHandler(
     ICustomerRepository customerRepository,
     IOrderRepository orderRepository,
+    IProductRepository productRepository,
+    IPricingService pricingService,
     IUnitOfWork unitOfWork,
     ICartService cartService) : ICommandHandler<CreateOrderCommand>
 {
-    private const decimal Discount = 0; // TODO: Add actual discount logic
-
     public async Task<Result> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
         Customer? customer = await customerRepository.GetAsync(command.CustomerId, cancellationToken);
@@ -40,13 +42,29 @@ internal sealed class CreateOrderCommandHandler(
 
         foreach (CartItem item in cart.Items)
         {
+            Product? product = await productRepository.GetAsync(item.ProductId, cancellationToken);
+            if (product is null)
+            {
+                return ProductErrors.NotFound(item.ProductId);
+            }
+
+            Result<ProductPrice> priceResult = pricingService.CalculatePrice(
+               product, item.Quantity, command.CouponCode);
+
+            if (priceResult.IsFailure)
+            {
+                return priceResult.Error;
+            }
+
+            ProductPrice price = priceResult.Value;
+
             order.AddItem(
-                order.Currency, 
-                item.ProductId, 
+                order.Currency,
+                item.ProductId,
                 item.ProductName,
-                item.UnitPrice,
-                Discount, 
-                item.PictureUrl, 
+                price.DiscountedUnitPrice,
+                price.DiscountPercentage,
+                item.PictureUrl,
                 item.Quantity);
         }
 

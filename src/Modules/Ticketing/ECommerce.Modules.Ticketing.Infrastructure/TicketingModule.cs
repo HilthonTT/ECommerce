@@ -13,6 +13,7 @@ using ECommerce.Modules.Ticketing.Domain.Carts;
 using ECommerce.Modules.Ticketing.Domain.Customers;
 using ECommerce.Modules.Ticketing.Domain.Messages;
 using ECommerce.Modules.Ticketing.Domain.Orders;
+using ECommerce.Modules.Ticketing.Domain.Pricing;
 using ECommerce.Modules.Ticketing.Domain.Products;
 using ECommerce.Modules.Ticketing.Domain.Tickets;
 using ECommerce.Modules.Ticketing.Infrastructure.AI;
@@ -68,6 +69,8 @@ public static class TicketingModule
 
         services.AddHttpClient<IPythonInferenceClient, PythonInferenceClient>(
             c => c.BaseAddress = new Uri("http://python-inference"));
+
+        services.AddSingleton<IPricingService, PricingService>();
 
         return services;
     }

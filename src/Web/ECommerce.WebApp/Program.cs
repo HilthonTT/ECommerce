@@ -1,5 +1,6 @@
 using ECommerce.WebApp;
 using ECommerce.WebApp.Components;
+using ECommerce.WebApp.Features.Catalog.Proxy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddApplicationServices();
 
 var app = builder.Build();
+
+app.RegisterPictureEndpoints();
 
 app.MapDefaultEndpoints();
 

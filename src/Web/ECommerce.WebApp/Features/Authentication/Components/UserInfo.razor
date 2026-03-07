@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthState
+
+<AuthorizeView>
+    <Authorized>
+        <div class="d-flex align-items-center gap-2">
+            <div class="rounded-circle bg-primary text-white d-flex justify-content-center
+                        align-items-center" style="width: 36px; height: 36px;">
+                @context.User.FindFirst("given_name")?.Value?.FirstOrDefault()
+            </div>
+            <div class="lh-sm">
+                <span class="fw-semibold small d-block">
+                    @context.User.FindFirst("given_name")?.Value
+                    @context.User.FindFirst("family_name")?.Value
+                </span>
+                <span class="text-muted small">
+                    @context.User.FindFirst("email")?.Value
+                </span>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <a href="/login" class="btn btn-outline-primary btn-sm">Sign in</a>
+    </NotAuthorized>
+</AuthorizeView>
+

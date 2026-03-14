@@ -1,0 +1,267 @@
+﻿@page "/cart"
+@inject NavigationManager NavigationManager
+@attribute [StreamRendering]
+
+<PageTitle>Cart — AdventureWorks</PageTitle>
+
+<!-- Header -->
+<div class="flex items-center justify-between mb-8">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Shopping Cart</h1>
+        <p class="mt-1 text-sm text-slate-500">@cartItems.Count item@(cartItems.Count != 1 ? "s" : "") in your cart</p>
+    </div>
+    @if (cartItems.Count > 0)
+    {
+        <button @onclick="ClearCart"
+                class="text-sm text-slate-400 hover:text-red-500 font-medium transition-colors">
+            Clear Cart
+        </button>
+    }
+</div>
+
+@if (cartItems.Count == 0)
+{
+    <!-- Empty Cart -->
+    <div class="flex flex-col items-center justify-center py-24 text-center">
+        <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+            <svg class="w-12 h-12 text-slate-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+        </div>
+        <h2 class="text-xl font-semibold text-slate-800">Your cart is empty</h2>
+        <p class="text-sm text-slate-500 mt-2 max-w-sm">Looks like you haven't added any products yet. Start browsing to find something you'll love.</p>
+        <button @onclick='() => NavigationManager.NavigateTo("/")'
+                class="mt-6 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition-colors">
+            Browse Catalog
+        </button>
+    </div>
+}
+else
+{
+    <div class="flex flex-col lg:flex-row gap-8">
+
+        <!-- Cart Items -->
+        <div class="flex-1 min-w-0">
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden divide-y divide-slate-100">
+                @foreach (var item in cartItems)
+                {
+                    <div class="flex gap-4 sm:gap-6 p-5 sm:p-6 group">
+                        <!-- Image -->
+                        <div class="w-24 h-24 sm:w-28 sm:h-28 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shrink-0 cursor-pointer"
+                             @onclick="() => OnCatalogItemClick(item.ProductId)">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            }
+                            else
+                            {
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <svg class="w-10 h-10 text-slate-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                                    </svg>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Details -->
+                        <div class="flex-1 min-w-0 flex flex-col">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">@item.Brand</span>
+                                    </div>
+                                    <h3 class="text-sm sm:text-base font-semibold text-slate-800 truncate cursor-pointer hover:text-emerald-700 transition-colors"
+                                        @onclick="() => OnCatalogItemClick(item.ProductId)">
+                                        @item.Name
+                                    </h3>
+                                    <p class="text-xs text-slate-400 mt-0.5">@item.Type</p>
+                                </div>
+                                <p class="text-base sm:text-lg font-bold text-slate-900 whitespace-nowrap">
+                                    @((item.Price * item.Quantity).ToString("C"))
+                                </p>
+                            </div>
+
+                            <div class="mt-auto pt-3 flex items-center justify-between">
+                                <!-- Quantity -->
+                                <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white">
+                                    <button @onclick="() => UpdateQuantity(item, item.Quantity - 1)"
+                                            disabled="@(item.Quantity <= 1)"
+                                            class="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                                        <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                                        </svg>
+                                    </button>
+                                    <span class="w-10 text-center text-sm font-semibold text-slate-800 tabular-nums">@item.Quantity</span>
+                                    <button @onclick="() => UpdateQuantity(item, item.Quantity + 1)"
+                                            class="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors">
+                                        <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <!-- Unit price + Remove -->
+                                <div class="flex items-center gap-4">
+                                    <span class="text-xs text-slate-400">@item.Price.ToString("C") each</span>
+                                    <button @onclick="() => RemoveItem(item)"
+                                            class="text-slate-300 hover:text-red-500 transition-colors p-1">
+                                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Continue shopping -->
+            <button @onclick='() => NavigationManager.NavigateTo("/")'
+                    class="mt-4 flex items-center gap-2 text-sm text-slate-500 hover:text-emerald-600 font-medium transition-colors">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+                Continue Shopping
+            </button>
+        </div>
+
+        <!-- Order Summary -->
+        <aside class="w-full lg:w-96 shrink-0">
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sticky top-6">
+                <h2 class="text-lg font-bold text-slate-900 mb-5">Order Summary</h2>
+
+                <dl class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <dt class="text-slate-500">Subtotal (@cartItems.Sum(i => i.Quantity) items)</dt>
+                        <dd class="font-semibold text-slate-800">@Subtotal.ToString("C")</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-slate-500">Shipping</dt>
+                        <dd class="font-semibold text-slate-800">
+                            @if (Subtotal >= 50)
+                            {
+                                <span class="text-emerald-600">Free</span>
+                            }
+                            else
+                            {
+                                @ShippingCost.ToString("C")
+                            }
+                        </dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-slate-500">Tax (estimated)</dt>
+                        <dd class="font-semibold text-slate-800">@Tax.ToString("C")</dd>
+                    </div>
+                </dl>
+
+                @if (Subtotal < 50)
+                {
+                    <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                        <p class="text-xs text-emerald-700 font-medium">
+                            Add <span class="font-bold">@((50 - Subtotal).ToString("C"))</span> more for free shipping!
+                        </p>
+                        <div class="mt-2 h-1.5 bg-emerald-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500 rounded-full transition-all"
+                                 style="width: @((Subtotal / 50 * 100).ToString("F0"))%"></div>
+                        </div>
+                    </div>
+                }
+
+                <div class="border-t border-slate-200 mt-5 pt-5">
+                    <div class="flex justify-between text-base">
+                        <span class="font-semibold text-slate-700">Total</span>
+                        <span class="font-extrabold text-slate-900 text-lg">@Total.ToString("C")</span>
+                    </div>
+                </div>
+
+                <button @onclick="ProceedToCheckout"
+                        class="mt-6 w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm font-bold rounded-xl shadow-sm shadow-emerald-600/20 hover:shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                    </svg>
+                    Proceed to Checkout
+                </button>
+
+                <!-- Trust badges -->
+                <div class="mt-5 flex items-center justify-center gap-4 text-xs text-slate-400">
+                    <span class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                        </svg>
+                        Secure checkout
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                        </svg>
+                        30-day returns
+                    </span>
+                </div>
+            </div>
+        </aside>
+    </div>
+}
+
+@code 
+
+    {
+    // ── Mock data — replace with your CartService ──
+    private List<CartItemViewModel> cartItems = [];
+
+    protected override void OnInitialized()
+    {
+        // TODO: Replace with await CartService.GetCartItemsAsync()
+        cartItems =
+        [
+    new() { ProductId = 1, Name = "Mountain Bike Pro 3000", Brand = "AdventureWorks", Type = "Bikes", Price = 899.99m, Quantity = 1, ImageUrl = null },
+            new() { ProductId = 2, Name = "Cycling Helmet Ultra", Brand = "AdventureWorks", Type = "Accessories", Price = 59.99m, Quantity = 2, ImageUrl = null },
+            new() { ProductId = 3, Name = "Carbon Fiber Water Bottle", Brand = "HydroTech", Type = "Accessories", Price = 24.99m, Quantity = 1, ImageUrl = null },
+    ];
+    }
+
+    private decimal Subtotal => cartItems.Sum(i => i.Price * i.Quantity);
+    private decimal ShippingCost => Subtotal >= 50 ? 0m : 5.99m;
+    private decimal Tax => Math.Round(Subtotal * 0.21m, 2); // 21% VAT
+    private decimal Total => Subtotal + ShippingCost + Tax;
+
+    private void UpdateQuantity(CartItemViewModel item, int newQuantity)
+        {
+        if (newQuantity < 1) return;
+        item.Quantity = newQuantity;
+        // TODO: await CartService.UpdateQuantityAsync(item.ProductId, newQuantity);
+    }
+
+    private void RemoveItem(CartItemViewModel item)
+        {
+        cartItems.Remove(item);
+        // TODO: await CartService.RemoveItemAsync(item.ProductId);
+    }
+
+    private void ClearCart()
+        {
+        cartItems.Clear();
+        // TODO: await CartService.ClearCartAsync();
+    }
+
+    private void ProceedToCheckout()
+        {
+        NavigationManager.NavigateTo("/checkout");
+    }
+
+    private void OnCatalogItemClick(int catalogItemId)      {
+        NavigationManager.NavigateTo($"/catalog/{catalogItemId}");
+    }
+
+    // ── ViewModel — replace with your DTO when ready ──
+    private class CartItemViewModel
+    {
+        public int ProductId { get; set; }
+        public string Name { get; set; } = "";
+        public string Brand { get; set; } = "";
+        public string Type { get; set; } = "";
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public string? ImageUrl { get; set; }
+    }
+}

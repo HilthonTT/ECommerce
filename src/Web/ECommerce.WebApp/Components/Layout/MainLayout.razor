@@ -1,23 +1,108 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
+<div class="flex h-screen bg-slate-50 overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="hidden lg:flex w-64 shrink-0">
         <NavMenu />
+    </aside>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div class="@MobileMenuOverlayClass" @onclick="CloseMobileMenu">
+        <aside class="w-64 h-full" @onclick:stopPropagation>
+            <NavMenu />
+        </aside>
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+        <!-- Top Bar -->
+        <header class="h-16 shrink-0 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-3">
+                <!-- Mobile menu button -->
+                <button @onclick="ToggleMobileMenu"
+                        class="lg:hidden p-2 -ml-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+
+                <!-- Breadcrumb / Page context -->
+                <nav class="hidden sm:flex items-center gap-1.5 text-sm text-slate-500">
+                    <a href="" class="hover:text-slate-700 transition-colors">AdventureWorks</a>
+                    <svg class="w-3.5 h-3.5 text-slate-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                    <span class="text-slate-800 font-medium">@GetCurrentPageName()</span>
+                </nav>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Cart shortcut -->
+                <a href="cart" class="relative p-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                </a>
+
+                <!-- Notifications -->
+                <button class="relative p-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                    </svg>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-emerald-500 rounded-full"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                @Body
+            </div>
+        </main>
+    </div>
 </div>
 
-<div id="blazor-error-ui" data-nosnippet>
+<!-- Error UI -->
+<div id="blazor-error-ui" data-nosnippet
+     class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 hidden bg-red-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-3">
     An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+    <a href="." class="reload underline font-semibold hover:text-red-100">Reload</a>
+    <span class="dismiss cursor-pointer opacity-70 hover:opacity-100 transition-opacity">✕</span>
 </div>
+
+@code {
+    private bool isMobileMenuOpen;
+
+    private string MobileMenuOverlayClass => isMobileMenuOpen
+        ? "fixed inset-0 z-40 flex lg:hidden bg-black/50 backdrop-blur-sm transition-opacity"
+        : "hidden";
+
+    private void ToggleMobileMenu() => isMobileMenuOpen = !isMobileMenuOpen;
+    private void CloseMobileMenu() => isMobileMenuOpen = false;
+
+    private string GetCurrentPageName()
+    {
+        // You can enhance this with a cascading parameter or a service
+        // For now, derive from the URI
+        var uri = new Uri(NavigationManager.Uri);
+        var path = uri.AbsolutePath.Trim('/');
+
+        if (string.IsNullOrEmpty(path)) return "Catalog";
+
+        return path.Split('/')[0] switch
+        {
+            "brands" => "Brands",
+            "categories" => "Categories",
+            "cart" => "Cart",
+            "orders" => "Orders",
+            "tickets" => "Tickets",
+            "catalog" => "Product",
+            _ => char.ToUpper(path[0]) + path[1..]
+        };
+    }
+
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+}

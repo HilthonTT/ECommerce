@@ -83,6 +83,8 @@ public static class UsersModule
                     args.Outcome switch
                     {
                         { Result.StatusCode: HttpStatusCode.TooManyRequests } => false,
+                        { Result.StatusCode: HttpStatusCode.BadRequest } => false,
+                        { Result.StatusCode: HttpStatusCode.Unauthorized } => false,
                         { Result.StatusCode: >= HttpStatusCode.InternalServerError } => true,
                         { Exception: not null } => true,
                         _ => false

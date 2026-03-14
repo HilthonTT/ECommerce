@@ -1,0 +1,57 @@
+﻿@inject AuthenticationStateProvider AuthState
+
+<AuthorizeView>
+    <Authorized>
+        <div class="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-slate-800/60 transition-colors cursor-pointer group">
+            <!-- Avatar -->
+            <div class="relative shrink-0">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                    <span class="text-sm font-bold text-white leading-none">
+                        @GetInitials(context)
+                    </span>
+                </div>
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-slate-900 rounded-full"></span>
+            </div>
+
+            <!-- Name + Email -->
+            <div class="flex-1 min-w-0">
+                <span class="block text-sm font-semibold text-slate-200 truncate leading-tight">
+                    @context.User.FindFirst("given_name")?.Value
+                    @context.User.FindFirst("family_name")?.Value
+                </span>
+                <span class="block text-xs text-slate-500 truncate leading-tight mt-0.5">
+                    @context.User.FindFirst("email")?.Value
+                </span>
+            </div>
+
+            <!-- Chevron / Menu hint -->
+            <svg class="w-4 h-4 text-slate-600 group-hover:text-slate-400 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <a href="/login"
+               class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/10 hover:border-emerald-500/50 transition-colors">
+            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+            </svg>
+            Sign in
+        </a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private static string GetInitials(AuthenticationState context)
+    {
+        var given = context.User.FindFirst("given_name")?.Value;
+        var family = context.User.FindFirst("family_name")?.Value;
+
+        var first = string.IsNullOrEmpty(given) ? "" : given[..1];
+        var last = string.IsNullOrEmpty(family) ? "" : family[..1];
+
+        var initials = $"{first}{last}".ToUpperInvariant();
+
+        return string.IsNullOrEmpty(initials) ? "?" : initials;
+    }
+}

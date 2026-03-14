@@ -1,6 +1,6 @@
-using ECommerce.WebApp;
+using ECommerce.Web.Shared;
+using ECommerce.Web.Shared.Endpoints.Catalog;
 using ECommerce.WebApp.Components;
-using ECommerce.WebApp.Features.Catalog.Proxy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +10,11 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddApplicationServices();
+builder.Services.AddSharedServices();
 
 var app = builder.Build();
 
-app.RegisterPictureEndpoints();
+app.RegisterCatalogEndpoints();
 
 app.MapDefaultEndpoints();
 

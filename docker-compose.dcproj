@@ -11,5 +11,6 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+    <None Include="src\Web\ECommerce.WebApp\Components\Pages\Catalog\Component.razor" />
   </ItemGroup>
 </Project>

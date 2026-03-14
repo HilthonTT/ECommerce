@@ -46,6 +46,7 @@
     </Project>
   </Folder>
   <Folder Name="/src/Web/">
+    <Project Path="src/Web/ECommerce.Web.Shared/ECommerce.Web.Shared.csproj" Id="9353e550-fe2a-46ab-b498-ed076e3776ff" />
     <Project Path="src/Web/ECommerce.WebApp/ECommerce.WebApp.csproj" Id="0f6be8d1-28b9-457f-9973-540d760f9451" />
   </Folder>
   <Project Path="docker-compose.dcproj">

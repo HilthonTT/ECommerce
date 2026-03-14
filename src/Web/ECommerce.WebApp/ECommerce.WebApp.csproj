@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -7,12 +7,13 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\ECommerce.ServiceDefaults\ECommerce.ServiceDefaults.csproj" />
-  </ItemGroup>
+	<Target Name="BuildTailwind" BeforeTargets="Build">
+		<Exec Command="npm run css:build" WorkingDirectory="$(ProjectDir)" />
+	</Target>
 
   <ItemGroup>
-    <Folder Include="Features\Catalog\Components\" />
+    <ProjectReference Include="..\..\..\ECommerce.ServiceDefaults\ECommerce.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\ECommerce.Web.Shared\ECommerce.Web.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

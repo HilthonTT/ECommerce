@@ -1,0 +1,418 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+@inject ICatalogService CatalogService
+@attribute [StreamRendering]
+
+<PageTitle>AdventureWorks — Catalog</PageTitle>
+
+<!-- Hero / Header -->
+<section class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 py-16 px-6 sm:px-10 rounded-2xl mb-10">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-emerald-400 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-1/4 w-72 h-72 bg-teal-500 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-3xl">
+        <h1 class="text-5xl sm:text-6xl font-extrabold text-white tracking-tight leading-tight">
+            Adventure<span class="text-emerald-400">Works</span>
+        </h1>
+        <p class="mt-4 text-lg text-slate-300 max-w-xl">
+            Browse our catalog of quality products. Filter by brand, type, or search to find exactly what you need.
+        </p>
+    </div>
+</section>
+
+<!-- Toolbar: Search + Active Filters -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
+    <div class="relative w-full sm:max-w-md">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+        <input type="text"
+               @bind="searchTerm"
+               @bind:event="oninput"
+               @onkeydown="HandleSearchKeyDown"
+               placeholder="Search products..."
+               class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+    </div>
+
+    <button @onclick="ApplyFilters"
+            class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors">
+        Search
+    </button>
+
+    @if (BrandId.HasValue || TypeId.HasValue || !string.IsNullOrEmpty(SearchTerm))
+    {
+        <button @onclick="ClearFilters"
+                class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium rounded-xl transition-colors">
+            Clear All Filters
+        </button>
+    }
+</div>
+
+<!-- Main Layout: Sidebar + Grid -->
+<div class="flex flex-col lg:flex-row gap-8 pb-8">
+
+    <!-- Sidebar Filters -->
+    <aside class="w-full lg:w-64 shrink-0">
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sticky top-6">
+            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-5">Filters</h2>
+
+            <!-- Brand Filter -->
+            <div class="mb-6">
+                <h3 class="text-sm font-semibold text-slate-700 mb-3">Brand</h3>
+                @if (brands is null)
+                {
+                    <div class="space-y-2">
+                        @for (int i = 0; i < 4; i++)
+                        {
+                            <div class="h-8 bg-slate-100 rounded-lg animate-pulse"></div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="space-y-1 max-h-60 overflow-y-auto">
+                        <button @onclick="() => SelectBrand(null)"
+                                class="@FilterButtonClass(BrandId is null) w-full text-left px-3 py-2 rounded-lg text-sm transition-colors">
+                            All Brands
+                        </button>
+                        @foreach (var brand in brands.Items)
+                        {
+                            <button @onclick="() => SelectBrand(brand.Id)"
+                                    class="@FilterButtonClass(BrandId == brand.Id) w-full text-left px-3 py-2 rounded-lg text-sm transition-colors">
+                                @brand.Brand
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Type Filter -->
+            <div>
+                <h3 class="text-sm font-semibold text-slate-700 mb-3">Type</h3>
+                @if (catalogTypes is null)
+                {
+                    <div class="space-y-2">
+                        @for (int i = 0; i < 4; i++)
+                        {
+                            <div class="h-8 bg-slate-100 rounded-lg animate-pulse"></div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="space-y-1 max-h-60 overflow-y-auto">
+                        <button @onclick="() => SelectType(null)"
+                                class="@FilterButtonClass(TypeId is null) w-full text-left px-3 py-2 rounded-lg text-sm transition-colors">
+                            All Types
+                        </button>
+                        @foreach (var type in catalogTypes.Items)
+                        {
+                            <button @onclick="() => SelectType(type.Id)"
+                                    class="@FilterButtonClass(TypeId == type.Id) w-full text-left px-3 py-2 rounded-lg text-sm transition-colors">
+                                @type.Type
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </aside>
+
+    <!-- Product Grid -->
+    <div class="flex-1 min-w-0">
+        @if (paginatedResult is null)
+        {
+            <!-- Skeleton Loading Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                @for (int i = 0; i < 6; i++)
+                {
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm animate-pulse">
+                        <div class="aspect-square bg-slate-100"></div>
+                        <div class="p-5 space-y-3">
+                            <div class="h-4 bg-slate-100 rounded w-3/4"></div>
+                            <div class="h-3 bg-slate-100 rounded w-1/2"></div>
+                            <div class="h-5 bg-slate-100 rounded w-1/4 mt-4"></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else if (paginatedResult.Items.Count == 0)
+        {
+            <!-- Empty State -->
+            <div class="flex flex-col items-center justify-center py-24 text-center">
+                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-10 h-10 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-700">No products found</h3>
+                <p class="text-sm text-slate-500 mt-2 max-w-sm">
+                    Try adjusting your filters or search term to find what you're looking for.
+                </p>
+                <button @onclick="ClearFilters"
+                        class="mt-6 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors">
+                    Clear Filters
+                </button>
+            </div>
+        }
+        else
+        {
+            <!-- Results Count -->
+            <p class="text-sm text-slate-500 mb-5">
+                Showing <span class="font-semibold text-slate-700">@paginatedResult.Items.Count</span>
+                of <span class="font-semibold text-slate-700">@paginatedResult.TotalCount</span> products
+            </p>
+
+            <!-- Product Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                @foreach (var item in paginatedResult.Items)
+                {
+                    <article class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all duration-300 cursor-pointer"
+                             @onclick="() => NavigateToItem(item.Id)">
+                        <!-- Image -->
+                        <div class="aspect-square bg-slate-50 overflow-hidden">
+                            @if (!string.IsNullOrEmpty(item.PictureFileName))
+                            {
+                                <img src="@CatalogService.GetPictureUrl(item.Id)"
+                                     alt="@item.Name"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            }
+                            else
+                            {
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <svg class="w-16 h-16 text-slate-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                                    </svg>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Info -->
+                        <div class="p-5">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                                    @item.CatalogBrand.Brand
+                                </span>
+                                <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                                    @item.CatalogType.Type
+                                </span>
+                            </div>
+                            <h3 class="text-base font-semibold text-slate-800 leading-snug line-clamp-2 group-hover:text-emerald-700 transition-colors">
+                                @item.Name
+                            </h3>
+                            @if (!string.IsNullOrEmpty(item.Description))
+                            {
+                                <p class="text-sm text-slate-500 mt-1 line-clamp-2">@item.Description</p>
+                            }
+                            <p class="text-xl font-bold text-slate-900 mt-3">
+                                @item.Price.ToString("C")
+                            </p>
+                        </div>
+                    </article>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (paginatedResult.TotalPages > 1)
+            {
+                <nav class="flex items-center justify-center gap-2 mt-10">
+                    <button @onclick="() => GoToPage(currentPage - 1)"
+                            disabled="@(currentPage <= 1)"
+                            class="px-4 py-2 text-sm font-medium rounded-lg border transition-colors
+                        @(currentPage <= 1
+                                                        ? "border-slate-200 text-slate-300 cursor-not-allowed"
+                                                        : "border-slate-200 text-slate-600 hover:bg-slate-50")">
+                        Previous
+                    </button>
+
+                    @foreach (var pageNum in GetPageNumbers())
+                    {
+                        @if (pageNum == -1)
+                        {
+                            <span class="px-2 text-slate-400">…</span>
+                        }
+                        else
+                        {
+                            <button @onclick="() => GoToPage(pageNum)"
+                                    class="@PaginationButtonClass(pageNum) min-w-[40px] py-2 text-sm font-medium rounded-lg transition-colors">
+                                @pageNum
+                            </button>
+                        }
+                    }
+
+                    <button @onclick="() => GoToPage(currentPage + 1)"
+                            disabled="@(currentPage >= paginatedResult.TotalPages)"
+                            class="px-4 py-2 text-sm font-medium rounded-lg border transition-colors
+                        @(currentPage >= paginatedResult.TotalPages
+                                                        ? "border-slate-200 text-slate-300 cursor-not-allowed"
+                                                        : "border-slate-200 text-slate-600 hover:bg-slate-50")">
+                        Next
+                    </button>
+                </nav>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private const int PageSize = 12;
+
+    [SupplyParameterFromQuery]
+    public int? Page { get; set; }
+
+    [SupplyParameterFromQuery(Name = "brand")]
+    public Guid? BrandId { get; set; }
+
+    [SupplyParameterFromQuery(Name = "type")]
+    public Guid? TypeId { get; set; }
+
+    [SupplyParameterFromQuery(Name = "q")]
+    public string? SearchTerm { get; set; }
+
+    private PaginationResult<CatalogItemDto>? paginatedResult;
+    private CollectionResponse<CatalogBrandDto>? brands;
+    private CollectionResponse<CatalogItemTypeDto>? catalogTypes;
+
+    private string? searchTerm;
+    private int currentPage => Page ?? 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        searchTerm = SearchTerm;
+
+        // Load filters and products in parallel
+        var brandsTask = CatalogService.GetBrandsAsync();
+        var typesTask = CatalogService.GetTypesAsync();
+        var itemsTask = CatalogService.GetPaginatedItemsAsync(
+            page: currentPage,
+            pageSize: PageSize,
+            searchTerm: SearchTerm,
+            catalogBrandId: BrandId,
+            catalogTypeId: TypeId);
+
+        await Task.WhenAll(brandsTask, typesTask, itemsTask);
+
+        brands = await brandsTask;
+        catalogTypes = await typesTask;
+        paginatedResult = await itemsTask;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        searchTerm = SearchTerm;
+
+        var brandsTask = CatalogService.GetBrandsAsync();
+        var typesTask = CatalogService.GetTypesAsync();
+        var itemsTask = CatalogService.GetPaginatedItemsAsync(
+            page: currentPage,
+            pageSize: PageSize,
+            searchTerm: SearchTerm,
+            catalogBrandId: BrandId,
+            catalogTypeId: TypeId);
+
+        await Task.WhenAll(brandsTask, typesTask, itemsTask);
+
+        brands = await brandsTask;
+        catalogTypes = await typesTask;
+        paginatedResult = await itemsTask;
+    }
+
+    private void NavigateToItem(int id)
+    {
+        NavigationManager.NavigateTo($"/catalog/{id}");
+    }
+
+    private void ApplyFilters()
+    {
+        NavigateWithParams(page: 1, brandId: BrandId, typeId: TypeId, search: searchTerm);
+    }
+
+    private void ClearFilters()
+    {
+        searchTerm = null;
+        NavigateWithParams(page: 1, brandId: null, typeId: null, search: null);
+    }
+
+    private void SelectBrand(Guid? brandId)
+    {
+        NavigateWithParams(page: 1, brandId: brandId, typeId: TypeId, search: searchTerm);
+    }
+
+    private void SelectType(Guid? typeId)
+    {
+        NavigateWithParams(page: 1, brandId: BrandId, typeId: typeId, search: searchTerm);
+    }
+
+    private void GoToPage(int page)
+    {
+        NavigateWithParams(page: page, brandId: BrandId, typeId: TypeId, search: searchTerm);
+    }
+
+    private void HandleSearchKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            ApplyFilters();
+        }
+    }
+
+    private void NavigateWithParams(int page, Guid? brandId, Guid? typeId, string? search)
+    {
+        var queryParams = new Dictionary<string, object?>
+        {
+            ["page"] = page > 1 ? page : null,
+            ["brand"] = brandId,
+            ["type"] = typeId,
+            ["q"] = string.IsNullOrWhiteSpace(search) ? null : search,
+        };
+
+        var uri = NavigationManager.GetUriWithQueryParameters("/", queryParams);
+        NavigationManager.NavigateTo(uri);
+    }
+
+    private List<int> GetPageNumbers()
+    {
+        if (paginatedResult is null)
+        {
+            return [];
+        }
+
+        var totalPages = paginatedResult.TotalPages;
+        var pages = new List<int>();
+        const int wing = 2; // pages around current
+
+        pages.Add(1);
+
+        if (currentPage - wing > 2)
+        {
+            pages.Add(-1); // ellipsis
+        }
+
+        for (int i = Math.Max(2, currentPage - wing); i <= Math.Min(totalPages - 1, currentPage + wing); i++)
+        {
+            
+        }
+
+        if (currentPage + wing < totalPages - 1)
+        {
+            pages.Add(-1); // ellipsis
+        }
+
+        if (totalPages > 1)
+        {
+            pages.Add(totalPages);
+        }
+
+        return pages;
+    }
+
+    private string FilterButtonClass(bool isActive) => isActive
+        ? "bg-emerald-50 text-emerald-700 font-semibold"
+        : "text-slate-600 hover:bg-slate-50";
+
+    private string PaginationButtonClass(int pageNum) => pageNum == currentPage
+        ? "bg-emerald-600 text-white border border-emerald-600"
+        : "border border-slate-200 text-slate-600 hover:bg-slate-50";
+}

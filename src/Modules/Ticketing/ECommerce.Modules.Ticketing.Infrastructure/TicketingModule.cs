@@ -6,6 +6,7 @@ using ECommerce.Common.Presentation.Endpoints;
 using ECommerce.Modules.Ticketing.Application.Abstractions.AI;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Authentication;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Data;
+using ECommerce.Modules.Ticketing.Application.Abstractions.Orders;
 using ECommerce.Modules.Ticketing.Application.Orders;
 using ECommerce.Modules.Ticketing.Application.Orders.GetUserOrders;
 using ECommerce.Modules.Ticketing.Application.Tickets;
@@ -24,6 +25,7 @@ using ECommerce.Modules.Ticketing.Infrastructure.Database;
 using ECommerce.Modules.Ticketing.Infrastructure.Inbox;
 using ECommerce.Modules.Ticketing.Infrastructure.Messages;
 using ECommerce.Modules.Ticketing.Infrastructure.Orders;
+using ECommerce.Modules.Ticketing.Infrastructure.Orders.Strategies;
 using ECommerce.Modules.Ticketing.Infrastructure.Outbox;
 using ECommerce.Modules.Ticketing.Infrastructure.Products;
 using ECommerce.Modules.Ticketing.Infrastructure.Tickets;
@@ -46,12 +48,6 @@ public static class TicketingModule
             .AddInfrastructure(configuration)
             .AddEndpoints(Presentation.AssemblyReference.Assembly);
 
-        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<GetTicketResponseItem, Ticket>>(
-            _ => TicketMappings.SortMapping);
-
-        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<OrderSummaryDto, Order>>(
-            _ => OrderMappings.SortMapping);
-
         return services;
     }
 
@@ -72,10 +68,20 @@ public static class TicketingModule
 
         services.AddSingleton<IPricingService, PricingService>();
 
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<GetTicketResponseItem, Ticket>>(
+            _ => TicketMappings.SortMapping);
+
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<OrderSummaryDto, Order>>(
+            _ => OrderMappings.SortMapping);
+
+        services.AddTransient<IShippingStrategy, FedexShippingStrategy>();
+        services.AddTransient<IShippingStrategy, UpsShippingStrategy>();
+        services.AddTransient<IShippingStrategy, UspsShippingStrategy>();
+        services.AddTransient<IShippingStrategy, DhlShippingStrategy>();
+
         return services;
     }
-        
-
+    
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration) =>
         services
             .AddDbContext<TicketingDbContext>(Postgres.StandardOptions(configuration, Schemas.Ticketing))

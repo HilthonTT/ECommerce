@@ -1,6 +1,7 @@
 ﻿using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Domain;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Data;
+using ECommerce.Modules.Ticketing.Application.Abstractions.Orders;
 using ECommerce.Modules.Ticketing.Domain.Carts;
 using ECommerce.Modules.Ticketing.Domain.Customers;
 using ECommerce.Modules.Ticketing.Domain.Orders;
@@ -15,8 +16,12 @@ internal sealed class CreateOrderCommandHandler(
     IProductRepository productRepository,
     IPricingService pricingService,
     IUnitOfWork unitOfWork,
-    ICartService cartService) : ICommandHandler<CreateOrderCommand>
+    ICartService cartService,
+    IEnumerable<IShippingStrategy> shippingStrategies) : ICommandHandler<CreateOrderCommand>
 {
+    private readonly Dictionary<string, IShippingStrategy> _strategies = 
+        shippingStrategies.ToDictionary(s => s.ProviderName, s => s);
+
     public async Task<Result> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
         Customer? customer = await customerRepository.GetAsync(command.CustomerId, cancellationToken);
@@ -58,7 +63,7 @@ internal sealed class CreateOrderCommandHandler(
 
             ProductPrice price = priceResult.Value;
 
-            order.AddItem(
+            Result addItemResult = order.AddItem(
                 order.Currency,
                 item.ProductId,
                 item.ProductName,
@@ -66,6 +71,24 @@ internal sealed class CreateOrderCommandHandler(
                 price.DiscountPercentage,
                 item.PictureUrl,
                 item.Quantity);
+
+            if (addItemResult.IsFailure)
+            {
+                return addItemResult;
+            }
+        }
+
+        if (!_strategies.TryGetValue(command.ShippingProvider, out IShippingStrategy? strategy))
+        {
+            return OrderErrors.InvalidShippingProvider(command.ShippingProvider);
+        }
+
+        decimal shippingCost = strategy!.CalculateCost(order);
+
+        Result shippingResult = order.SetShippingCost(shippingCost, strategy!.ProviderName);
+        if (shippingResult.IsFailure)
+        {
+            return shippingResult;
         }
 
         orderRepository.Insert(order);

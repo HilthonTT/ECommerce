@@ -79,4 +79,16 @@ public static class OrderErrors
     public static readonly Error TotalOrderItemLowerThanAppliedDiscount = Error.Problem(
         "Order.TotalOrderItemLowerThanAppliedDiscount",
         "The total of order item is lower than applied discount.");
+
+    public static readonly Error InvalidShippingCost = Error.Problem(
+        "Order.InvalidShippingCost",
+        "Shipping cost cannot be negative.");
+
+    public static readonly Error ShippingProviderIsRequired = Error.Problem(
+        "Order.ShippingProviderIsRequired",
+        "Shipping provider is required.");
+
+    public static Error InvalidShippingProvider(string providerName) => Error.Problem(
+        "Order.InvalidShippingProvider",
+        $"Shipping provider '{providerName}' is not supported.");
 }

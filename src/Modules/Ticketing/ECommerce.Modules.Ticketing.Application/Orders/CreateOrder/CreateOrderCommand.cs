@@ -13,4 +13,5 @@ public sealed record CreateOrderCommand(
     string CardHolderName,
     DateTime CardExpiration,
     string CardSecurityNumber,
-    string? CouponCode) : ICommand;
+    string? CouponCode,
+    string ShippingProvider) : ICommand;

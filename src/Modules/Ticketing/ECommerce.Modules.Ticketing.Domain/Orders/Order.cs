@@ -27,6 +27,10 @@ public sealed class Order : Entity
 
     public string Currency { get; private set; } = string.Empty;
 
+    public decimal ShippingCost { get; private set; }
+
+    public string ShippingProvider { get; private set; } = string.Empty;
+
     public DateTime CreatedAtUtc { get; private init; }
 
     private Order() { }
@@ -257,6 +261,24 @@ public sealed class Order : Entity
         Description = $"The product items don't have stock: ({itemsStockRejectedDescription}).";
 
         Status = OrderStatus.Cancelled;
+
+        return Result.Success();
+    }
+
+    public Result SetShippingCost(decimal shippingCost, string providerName)
+    {
+        if (shippingCost < 0)
+        {
+            return OrderErrors.InvalidShippingCost;
+        }
+
+        if (string.IsNullOrWhiteSpace(providerName))
+        {
+            return OrderErrors.ShippingProviderIsRequired;
+        }
+
+        ShippingCost = shippingCost;
+        ShippingProvider = providerName;
 
         return Result.Success();
     }

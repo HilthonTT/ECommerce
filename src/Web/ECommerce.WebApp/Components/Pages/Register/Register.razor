@@ -1,0 +1,453 @@
+﻿@page "/register"
+@layout EmptyLayout
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create Account — AdventureWorks</PageTitle>
+
+<div class="min-h-screen flex">
+
+    <!-- Left: Brand Panel -->
+    <div class="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 overflow-hidden">
+        <!-- Glow effects -->
+        <div class="absolute inset-0">
+            <div class="absolute bottom-1/3 left-1/3 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-teal-500/15 rounded-full blur-3xl"></div>
+        </div>
+
+        <!-- Grid pattern overlay -->
+        <div class="absolute inset-0 opacity-[0.03]"
+             style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;">
+        </div>
+
+        <!-- Content -->
+        <div class="relative z-10 flex flex-col justify-between p-12 xl:p-16 w-full">
+            <div>
+                <a href="/" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                        <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.016A3.001 3.001 0 0 0 20.25 9.35m-16.5 0a3.004 3.004 0 0 0 2.25-5.097 3.004 3.004 0 0 0-2.25-1.003H3v5.1c0 .06 0 .12.008.18m16.492-.18S21 4.25 21 4.25h-.75a3.004 3.004 0 0 0-2.25 1.003 3.004 3.004 0 0 0 2.25 5.097" />
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold text-white tracking-tight">Adventure<span class="text-emerald-400">Works</span></span>
+                </a>
+            </div>
+
+            <div class="max-w-md">
+                <h2 class="text-4xl xl:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                    Join thousands of
+                    <span class="text-emerald-400">adventurers.</span>
+                </h2>
+                <p class="mt-5 text-lg text-slate-400 leading-relaxed">
+                    Create your account to unlock order tracking, wishlists, exclusive deals, and a personalized shopping experience.
+                </p>
+            </div>
+
+            <!-- Perks -->
+            <div class="space-y-4 max-w-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-emerald-500/15 rounded-lg flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                        </svg>
+                    </div>
+                    <span class="text-sm text-slate-300">Free shipping on orders over €50</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-emerald-500/15 rounded-lg flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                        </svg>
+                    </div>
+                    <span class="text-sm text-slate-300">Save favorites to your wishlist</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-emerald-500/15 rounded-lg flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                        </svg>
+                    </div>
+                    <span class="text-sm text-slate-300">Exclusive member-only deals</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-emerald-500/15 rounded-lg flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+                        </svg>
+                    </div>
+                    <span class="text-sm text-slate-300">Priority customer support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Register Form -->
+    <div class="flex-1 flex items-center justify-center px-6 py-12 sm:px-12 bg-slate-50">
+        <div class="w-full max-w-md">
+
+            <!-- Mobile brand -->
+            <div class="lg:hidden mb-10">
+                <a href="/" class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-emerald-500 rounded-lg flex items-center justify-center shadow-sm">
+                        <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.016A3.001 3.001 0 0 0 20.25 9.35m-16.5 0a3.004 3.004 0 0 0 2.25-5.097 3.004 3.004 0 0 0-2.25-1.003H3v5.1c0 .06 0 .12.008.18m16.492-.18S21 4.25 21 4.25h-.75a3.004 3.004 0 0 0-2.25 1.003 3.004 3.004 0 0 0 2.25 5.097" />
+                        </svg>
+                    </div>
+                    <span class="text-lg font-bold text-slate-900 tracking-tight">Adventure<span class="text-emerald-600">Works</span></span>
+                </a>
+            </div>
+
+            <!-- Heading -->
+            <div class="mb-8">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Create your account</h1>
+                <p class="mt-2 text-sm text-slate-500">
+                    Already have an account?
+                    <a href="/login" class="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors">Sign in</a>
+                </p>
+            </div>
+
+            <!-- Social Register -->
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <button @onclick="RegisterWithGoogle"
+                        class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                    </svg>
+                    Google
+                </button>
+                <button @onclick="RegisterWithMicrosoft"
+                        class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all">
+                    <svg class="w-4 h-4" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="10" height="10" fill="#F25022" />
+                        <rect x="12" y="1" width="10" height="10" fill="#7FBA00" />
+                        <rect x="1" y="12" width="10" height="10" fill="#00A4EF" />
+                        <rect x="12" y="12" width="10" height="10" fill="#FFB900" />
+                    </svg>
+                    Microsoft
+                </button>
+            </div>
+
+            <!-- Divider -->
+            <div class="flex items-center gap-4 mb-6">
+                <div class="flex-1 h-px bg-slate-200"></div>
+                <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">or register with email</span>
+                <div class="flex-1 h-px bg-slate-200"></div>
+            </div>
+
+            <!-- Form -->
+            <div class="space-y-5">
+                <!-- Name row -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="@LabelClass">First name</label>
+                        <input type="text" @bind="firstName" placeholder="John" class="@InputClass" />
+                    </div>
+                    <div>
+                        <label class="@LabelClass">Last name</label>
+                        <input type="text" @bind="lastName" placeholder="Doe" class="@InputClass" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="@LabelClass">Email address</label>
+                    <div class="relative">
+                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                        </svg>
+                        <input type="email" @bind="email" placeholder="you@example.com" class="@InputClass pl-10" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="@LabelClass">Password</label>
+                    <div class="relative">
+                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                        </svg>
+                        <input type="@(showPassword ? "text" : "password")"
+                               @bind="password"
+                               @bind:event="oninput"
+                               placeholder="Min. 8 characters"
+                               class="@InputClass pl-10 pr-12" />
+                        <button type="button"
+                                @onclick="() => showPassword = !showPassword"
+                                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                            @if (showPassword)
+                            {
+                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                            }
+                        </button>
+                    </div>
+
+                    <!-- Password strength -->
+                    @if (!string.IsNullOrEmpty(password))
+                    {
+                        <div class="mt-3 space-y-2">
+                            <div class="flex gap-1.5">
+                                @for (int i = 0; i < 4; i++)
+                                {
+                                    var idx = i;
+                                    <div class="flex-1 h-1.5 rounded-full transition-colors @(idx<PasswordStrength? StrengthBarColor : "bg-slate-200")"></div>
+                                }
+                            </div>
+                            <p class="text-xs font-medium @StrengthTextColor">@StrengthLabel</p>
+
+                            <div class="space-y-1 mt-1">
+                                <div class="flex items-center gap-2">
+                                    @if (password.Length >= 8)
+                                    {
+                                        <svg class="w-3.5 h-3.5 text-emerald-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-300"></div>
+                                    }
+                                    <span class="text-xs @(password.Length >= 8 ? "text-slate-600" : "text-slate-400")">At least 8 characters</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    @if (HasUpperAndLower)
+                                    {
+                                        <svg class="w-3.5 h-3.5 text-emerald-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-300"></div>
+                                    }
+                                    <span class="text-xs @(HasUpperAndLower ? "text-slate-600" : "text-slate-400")">Upper and lowercase letters</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    @if (HasNumber)
+                                    {
+                                        <svg class="w-3.5 h-3.5 text-emerald-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-300"></div>
+                                    }
+                                    <span class="text-xs @(HasNumber ? "text-slate-600" : "text-slate-400")">At least one number</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    @if (HasSpecial)
+                                    {
+                                        <svg class="w-3.5 h-3.5 text-emerald-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <div class="w-3.5 h-3.5 rounded-full border-2 border-slate-300"></div>
+                                    }
+                                    <span class="text-xs @(HasSpecial ? "text-slate-600" : "text-slate-400")">At least one special character</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div>
+                    <label class="@LabelClass">Confirm password</label>
+                    <div class="relative">
+                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        <input type="password"
+                               @bind="confirmPassword"
+                               placeholder="Repeat your password"
+                               class="@InputClass pl-10" />
+                    </div>
+                    @if (!string.IsNullOrEmpty(confirmPassword) && confirmPassword != password)
+                    {
+                        <p class="mt-1.5 text-xs text-red-500 font-medium">Passwords do not match.</p>
+                    }
+                </div>
+
+                <!-- Terms -->
+                <div class="flex items-start gap-2">
+                    <input type="checkbox" id="terms" @bind="acceptedTerms"
+                           class="w-4 h-4 mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 transition" />
+                    <label for="terms" class="text-sm text-slate-600 leading-snug select-none">
+                        I agree to the
+                        <a href="/terms" class="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors">Terms of Service</a>
+                        and
+                        <a href="/privacy" class="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <!-- Error message -->
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+                        <svg class="w-5 h-5 text-red-500 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                        </svg>
+                        <p class="text-sm text-red-700 font-medium">@errorMessage</p>
+                    </div>
+                }
+
+                <!-- Submit -->
+                <button @onclick="HandleRegister" disabled="@(isLoading || !acceptedTerms)"
+                        class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl shadow-sm shadow-emerald-600/20 hover:shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+                    @if (isLoading)
+                    {
+                        <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        <span>Creating account…</span>
+                    }
+                    else
+                    {
+                        <span>Create Account</span>
+                    }
+                </button>
+            </div>
+
+            <!-- Footer -->
+            <p class="mt-8 text-center text-xs text-slate-400">
+                By creating an account, you agree to receive marketing emails. You can unsubscribe at any time.
+            </p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string firstName = "";
+    private string lastName = "";
+    private string email = "";
+    private string password = "";
+    private string confirmPassword = "";
+    private bool acceptedTerms;
+    private bool showPassword;
+    private bool isLoading;
+    private string? errorMessage;
+
+    // ── Password checks ──
+    private bool HasUpperAndLower => password.Any(char.IsUpper) && password.Any(char.IsLower);
+    private bool HasNumber => password.Any(char.IsDigit);
+    private bool HasSpecial => password.Any(c => !char.IsLetterOrDigit(c));
+
+    private int PasswordStrength
+    {
+        get
+        {
+            int score = 0;
+            if (password.Length >= 8) score++;
+            if (HasUpperAndLower) score++;
+            if (HasNumber) score++;
+            if (HasSpecial) score++;
+            return score;
+        }
+    }
+
+    private string StrengthLabel => PasswordStrength switch
+    {
+        1 => "Weak",
+        2 => "Fair",
+        3 => "Good",
+        4 => "Strong",
+        _ => "Too short"
+    };
+
+    private string StrengthBarColor => PasswordStrength switch
+    {
+        1 => "bg-red-400",
+        2 => "bg-amber-400",
+        3 => "bg-emerald-400",
+        4 => "bg-emerald-500",
+        _ => "bg-slate-200"
+    };
+
+    private string StrengthTextColor => PasswordStrength switch
+    {
+        1 => "text-red-500",
+        2 => "text-amber-500",
+        3 => "text-emerald-600",
+        4 => "text-emerald-600",
+        _ => "text-slate-400"
+    };
+
+    private const string LabelClass = "block text-sm font-medium text-slate-700 mb-1.5";
+    private const string InputClass = "w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition";
+
+    private async Task HandleRegister()
+    {
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+        {
+            errorMessage = "Please enter your full name.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            errorMessage = "Please enter your email address.";
+            return;
+        }
+
+        if (PasswordStrength < 3)
+        {
+            errorMessage = "Please choose a stronger password.";
+            return;
+        }
+
+        if (password != confirmPassword)
+        {
+            errorMessage = "Passwords do not match.";
+            return;
+        }
+
+        if (!acceptedTerms)
+        {
+            errorMessage = "You must accept the terms and conditions.";
+            return;
+        }
+
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            // TODO: Wire up to your auth service / Keycloak
+            // await AuthService.RegisterAsync(firstName, lastName, email, password);
+            await Task.Delay(1200); // simulate
+
+            NavigationManager.NavigateTo("/login?registered=true");
+        }
+        catch (Exception)
+        {
+            errorMessage = "Something went wrong. Please try again later.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void RegisterWithGoogle()
+    {
+        // TODO: NavigationManager.NavigateTo("api/auth/google-register", forceLoad: true);
+    }
+
+    private void RegisterWithMicrosoft()
+    {
+        // TODO: NavigationManager.NavigateTo("api/auth/microsoft-register", forceLoad: true);
+    }
+}

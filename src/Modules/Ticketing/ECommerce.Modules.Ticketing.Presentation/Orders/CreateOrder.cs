@@ -1,6 +1,7 @@
 ﻿using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Presentation.ApiResults;
 using ECommerce.Common.Presentation.Endpoints;
+using ECommerce.Common.Presentation.Idempotent;
 using ECommerce.Modules.Ticketing.Application.Abstractions.Authentication;
 using ECommerce.Modules.Ticketing.Application.Orders.CreateOrder;
 using Microsoft.AspNetCore.Builder;
@@ -50,6 +51,7 @@ internal sealed class CreateOrder : IEndpoint
             return result.Match(Results.NoContent, ApiResults.Problem);
         })
         .WithTags(Tags.Orders)
-        .RequireCors(Permissions.CreateOrder);
+        .RequireAuthorization(Permissions.CreateOrder)
+        .AddEndpointFilter<IdempotencyFilter>();
     }
 }

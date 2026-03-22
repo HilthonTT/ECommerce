@@ -1,0 +1,20 @@
+{
+  "listen_addr": ":8080",
+  "health_check_interval": "30s",
+  "max_fail_count": 3,
+  "strategy": "weighted_round_robin",
+  "backends": [
+    {
+      "url": "http://backend1:8081",
+      "weight": 3
+    },
+    {
+      "url": "http://backend2:8082",
+      "weight": 2
+    },
+    {
+      "url": "http://backend3:8083",
+      "weight": 1
+    }
+  ]
+}

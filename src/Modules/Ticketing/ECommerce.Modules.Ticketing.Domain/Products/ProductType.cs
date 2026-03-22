@@ -11,7 +11,7 @@ public sealed class ProductType : Entity
 
     private ProductType() { }
 
-    public static Result<ProductType> Create(string type)
+    public static Result<ProductType> Create(Guid id, string type)
     {
         if (string.IsNullOrWhiteSpace(type))
         {
@@ -25,13 +25,18 @@ public sealed class ProductType : Entity
 
         var catalogType = new ProductType
         {
-            Id = Guid.CreateVersion7(),
+            Id = id,
             Type = type.Trim()
         };
 
         catalogType.RaiseDomainEvent(new ProductTypeCreatedDomainEvent(catalogType.Id, catalogType.Type));
 
         return Result.Success(catalogType);
+    }
+
+    public void RaiseCreateEvent()
+    {
+        RaiseDomainEvent(new ProductTypeCreatedDomainEvent(Id, Type));
     }
 
     public Result UpdateType(string type)

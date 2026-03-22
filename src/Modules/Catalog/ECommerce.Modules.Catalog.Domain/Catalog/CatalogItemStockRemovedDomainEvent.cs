@@ -5,9 +5,9 @@ namespace ECommerce.Modules.Catalog.Domain.Catalog;
 public sealed class CatalogItemStockRemovedDomainEvent(
     int catalogItemId,
     int quantityRemoved,
-    int remainingStock) : DomainEvent
+    int availableStock) : DomainEvent
 {
     public int CatalogItemId { get; } = catalogItemId;
     public int QuantityRemoved { get; } = quantityRemoved;
-    public int RemainingStock { get; } = remainingStock;
+    public int AvailableStock { get; } = availableStock;
 }

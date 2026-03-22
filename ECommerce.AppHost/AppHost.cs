@@ -13,7 +13,11 @@ var postgres = builder.AddPostgres("ecommerce-postgres")
 var redis = builder.AddRedis("ecommerce-redis")
     .WithDataVolume();
 
-var chatCompletion = builder.AddOllama("chatcompletion").WithDataVolume();
+var ollama = builder.AddOllama("ollama")
+    .WithDataVolume();
+
+var chatCompletion = ollama.AddModel("chatcompletion", "qwen2.5:3b");
+var embedding = ollama.AddModel("embedding", "nomic-embed-text");
 
 var keycloak = builder.AddKeycloakContainer("ecommerce-keycloak", port: 8080)
     .WithDataVolume();
@@ -40,11 +44,15 @@ var api = builder.AddProject<Projects.ECommerce_Api>("ecommerce-api")
     .WithReference(postgres, "Database")
     .WithReference(redis, "Cache")
     .WithReference(blobStorage)
-    .WithOllamaReference(chatCompletion)
+    .WithReference(chatCompletion)
+    .WithReference(embedding)
     .WithReference(keycloak)
+    .WaitFor(keycloak)
     .WaitFor(postgres)
     .WaitFor(redis)
-    .WaitFor(storage);
+    .WaitFor(storage)
+    .WaitFor(chatCompletion)
+    .WaitFor(embedding);
 
 builder.AddProject<Projects.ECommerce_WebApp>("ecommerce-webapp")
     .WithReference(api)

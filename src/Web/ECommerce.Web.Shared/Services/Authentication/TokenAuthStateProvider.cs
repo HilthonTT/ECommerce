@@ -5,52 +5,36 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
+namespace ECommerce.Web.Shared.Services.Authentication;
+
 public sealed class TokenAuthStateProvider(
     IAuthenticationService authenticationService,
-    ProtectedLocalStorage localStorage) : AuthenticationStateProvider
+    ProtectedLocalStorage localStorage,
+    TokenStore tokenStore) : AuthenticationStateProvider
 {
-    private const string TokenKey = "auth_tokens";
-
-    private AccessTokensDto? _tokens;
-    private bool _initialized;
-    private Task<bool>? _refreshTask;
+    private static readonly JwtSecurityTokenHandler JwtHandler = new();
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        if (!_initialized)
+        await InitializeAsync();
+
+        if (tokenStore.Tokens is null)
         {
-            _initialized = true;
-            try
-            {
-                var result = await localStorage.GetAsync<AccessTokensDto>(TokenKey);
-                if (result.Success && result.Value is not null)
-                {
-                    _tokens = result.Value;
-                }
-            }
-            catch (InvalidOperationException)
-            {
-                return Anonymous();
-            }
+            return Anonymous();
         }
 
-        if (_tokens is null)
-            return Anonymous();
-
-        var handler = new JwtSecurityTokenHandler();
-        var jwt = handler.ReadJwtToken(_tokens.AccessToken);
+        var jwt = JwtHandler.ReadJwtToken(tokenStore.Tokens.AccessToken);
 
         if (jwt.ValidTo < DateTime.UtcNow)
         {
-            // Coalesce concurrent refresh attempts into one Task
-            _refreshTask ??= TryRefreshAsync();
-            var refreshed = await _refreshTask;
-            _refreshTask = null;
+            var refreshed = await tokenStore.WithRefreshLockAsync(TryRefreshAsync);
 
             if (!refreshed)
+            {
                 return Anonymous();
+            }
 
-            jwt = handler.ReadJwtToken(_tokens!.AccessToken);
+            jwt = JwtHandler.ReadJwtToken(tokenStore.Tokens.AccessToken);
         }
 
         var identity = new ClaimsIdentity(jwt.Claims, "jwt");
@@ -63,8 +47,7 @@ public sealed class TokenAuthStateProvider(
 
         if (result?.AccessTokens is not null)
         {
-            _tokens = result.AccessTokens;
-            await localStorage.SetAsync(TokenKey, _tokens);
+            await PersistTokensAsync(result.AccessTokens);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
@@ -73,37 +56,78 @@ public sealed class TokenAuthStateProvider(
 
     public async Task LogoutAsync()
     {
-        _tokens = null;
-        await localStorage.DeleteAsync(TokenKey);
+        await ClearTokensAsync();
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+    }
+
+    private async Task InitializeAsync()
+    {
+        if (tokenStore.IsInitialized)
+        {
+            return;
+        }
+
+        tokenStore.IsInitialized = true;
+
+        try
+        {
+            var result = await localStorage.GetAsync<AccessTokensDto>(AuthCacheKeys.TokenKey);
+            if (result.Success && result.Value is not null)
+            {
+                tokenStore.Tokens = result.Value;
+            }
+        }
+        catch (InvalidOperationException)
+        {
+            // Prerendering — no JS interop
+        }
     }
 
     private async Task<bool> TryRefreshAsync()
     {
-        if (_tokens?.RefreshToken is null)
+        // Double-check after acquiring the lock — another call may have already refreshed
+        if (tokenStore.Tokens is not null)
+        {
+            var current = JwtHandler.ReadJwtToken(tokenStore.Tokens.AccessToken);
+            if (current.ValidTo >= DateTime.UtcNow)
+            {
+                return true;
+            }
+        }
+
+        if (tokenStore.Tokens?.RefreshToken is null)
         {
             return false;
         }
 
         try
         {
-            var refreshed = await authenticationService.RefreshAsync(_tokens.RefreshToken);
+            var refreshed = await authenticationService.RefreshAsync(tokenStore.Tokens.RefreshToken);
             if (refreshed is not null)
             {
-                _tokens = refreshed;
-                await localStorage.SetAsync(TokenKey, _tokens);
+                await PersistTokensAsync(refreshed);
                 return true;
             }
         }
-        catch (Exception)  // catch-all — GetAuthenticationStateAsync must never throw
+        catch
         {
-            // Any failure (HttpRequestException, InvalidOperationException, etc.)
-            // is treated as "session expired"
+            // Any failure = session expired
         }
 
-        _tokens = null;
-        await localStorage.DeleteAsync(TokenKey);
+        await ClearTokensAsync();
         return false;
+    }
+
+    private async Task PersistTokensAsync(AccessTokensDto tokens)
+    {
+        tokenStore.Tokens = tokens;
+        await localStorage.SetAsync(AuthCacheKeys.TokenKey, tokens);
+    }
+
+    private async Task ClearTokensAsync()
+    {
+        tokenStore.Tokens = null;
+        await localStorage.DeleteAsync(AuthCacheKeys.TokenKey);
     }
 
     private static AuthenticationState Anonymous() =>

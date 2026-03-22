@@ -65,9 +65,9 @@ internal sealed class CatalogDbContextSeeder(
                    source.Price,
                    typeIdsByName[source.Type!],
                    brandIdsByName[source.Brand!],
-                   100,
-                   200,
-                   10,
+                   availableStock: 100,
+                   restockThreshold: 10,  
+                   maxStockThreshold: 200, 
                    $"{source.Id}.webp"))
                .ToArray();
 

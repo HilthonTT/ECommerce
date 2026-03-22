@@ -69,9 +69,25 @@ public sealed class CatalogItem : Entity
             item.Name,
             item.Price,
             item.CatalogTypeId,
-            item.CatalogBrandId));
+            item.CatalogBrandId,
+            item.AvailableStock,
+            item.RestockThreshold,
+            item.MaxStockThreshold));
 
         return item;
+    }
+
+    public void TriggerCreatedEvent()
+    {
+        RaiseDomainEvent(new CatalogItemCreatedDomainEvent(
+            Id,
+            Name,
+            Price,
+            CatalogTypeId,
+            CatalogBrandId,
+            AvailableStock,
+            RestockThreshold,
+            MaxStockThreshold));
     }
 
     public Result UpdateDetails(string name, string? description, decimal price)

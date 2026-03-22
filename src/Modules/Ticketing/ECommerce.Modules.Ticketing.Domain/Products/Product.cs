@@ -110,7 +110,7 @@ public sealed class Product : Entity
         return Result.Success(product);
     }
 
-    public Result UpdateDetails(string name, string? description, decimal price)
+    public Result UpdateDetails(string name, string? description, decimal price, ReadOnlyMemory<float> nameEmbedding)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -127,9 +127,15 @@ public sealed class Product : Entity
             return ProductErrors.PriceMustBePositive;
         }
 
+        if (nameEmbedding.IsEmpty)
+        {
+            return Result.Failure<Product>(ProductErrors.NameEmbeddingIsRequired);
+        }
+
         Name = name.Trim();
         Description = description?.Trim();
         Price = price;
+        NameEmbedding = nameEmbedding;
 
         RaiseDomainEvent(new ProductDetailsUpdatedDomainEvent(Id, Name, Price));
 

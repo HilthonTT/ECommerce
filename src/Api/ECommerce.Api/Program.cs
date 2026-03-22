@@ -41,6 +41,21 @@ builder.Services
     .AddRedis(cacheConnectionString)
     .AddUrlGroup(new Uri(keycloakHealthUrl), HttpMethod.Get, "Keycloak");
 
+builder.Services.AddAuthentication()
+    .AddKeycloakJwtBearer(
+        serviceName: "ecommerce-keycloak",
+        realm: "ecommerce",
+        options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters.ValidAudiences =
+            [
+                "ecommerce-public-client",
+                "ecommerce-confidential-client",
+                "account"
+            ];
+        });
+
 WebApplication app = builder.Build();
 
 app.MapDefaultEndpoints();

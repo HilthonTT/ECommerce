@@ -56,6 +56,9 @@ internal static class DependencyInjection
             .AddWebhooksModule(builder.Configuration)
             .AddUsersModule(builder.Configuration);
 
+        builder.AddOllamaSharpEmbeddingGenerator("embedding");
+        builder.AddOllamaSharpChatClient("chatcompletion");
+
         return builder;
     }
 
@@ -175,14 +178,14 @@ internal static class DependencyInjection
         this WebApplicationBuilder builder, 
         string serviceName)
     {
-        ChatClientBuilder chatClientBuilder = (builder.Configuration[$"{serviceName}:Type"] == "ollama") ?
-            builder.AddOllamaChatClient(serviceName) :
-            builder.AddOpenAIChatClient(serviceName);
+        //ChatClientBuilder chatClientBuilder = (builder.Configuration[$"{serviceName}:Type"] == "ollama") ?
+        //    builder.AddOllamaChatClient(serviceName) :
+        //    builder.AddOpenAIChatClient(serviceName);
 
-        chatClientBuilder
-            .UseFunctionInvocation()
-            .UseCachingForTest()
-            .UseOpenTelemetry(configure: c => c.EnableSensitiveData = true);
+        //chatClientBuilder
+        //    .UseFunctionInvocation()
+        //    .UseCachingForTest()
+        //    .UseOpenTelemetry(configure: c => c.EnableSensitiveData = true);
 
         return builder;
     }

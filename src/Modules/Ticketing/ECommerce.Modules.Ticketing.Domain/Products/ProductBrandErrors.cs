@@ -4,6 +4,10 @@ namespace ECommerce.Modules.Ticketing.Domain.Products;
 
 public static class ProductBrandErrors
 {
+    public static Error NotFound(Guid productBrandId) => Error.NotFound(
+        "ProductBrand.NotFound",
+        $"The product brand Id = '{productBrandId}' was not found.");
+
     public static readonly Error BrandNameIsRequired = Error.Problem(
         "ProductBrand.BrandNameIsRequired",
         "Brand name is required.");

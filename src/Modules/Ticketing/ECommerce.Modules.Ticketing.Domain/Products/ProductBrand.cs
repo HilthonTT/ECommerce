@@ -12,7 +12,7 @@ public sealed class ProductBrand : Entity
 
     private ProductBrand() { }
 
-    public static Result<ProductBrand> Create(string brand)
+    public static Result<ProductBrand> Create(Guid id, string brand)
     {
         if (string.IsNullOrWhiteSpace(brand))
         {
@@ -26,13 +26,18 @@ public sealed class ProductBrand : Entity
 
         var productBrand = new ProductBrand
         {
-            Id = Guid.CreateVersion7(),
+            Id = id,
             Brand = brand.Trim()
         };
 
         productBrand.RaiseDomainEvent(new ProductBrandCreatedDomainEvent(productBrand.Id, productBrand.Brand));
 
         return Result.Success(productBrand);
+    }
+
+    public void RaiseCreateEvent()
+    {
+        RaiseDomainEvent(new ProductBrandCreatedDomainEvent(Id, Brand));
     }
 
     public Result UpdateBrand(string brand)

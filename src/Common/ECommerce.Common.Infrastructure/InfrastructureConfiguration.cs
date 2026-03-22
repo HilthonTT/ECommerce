@@ -28,8 +28,8 @@ public static class InfrastructureConfiguration
         string databaseConnectionString,
         string cacheConnectionString)
     {
-        services.AddAuthorizationInternal();
         services.AddAuthenticationInternal();
+        services.AddAuthorizationInternal();
 
         services.AddAuditing();
 

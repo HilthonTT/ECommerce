@@ -66,6 +66,8 @@ public static class TicketingModule
         services.AddHttpClient<IPythonInferenceClient, PythonInferenceClient>(
             c => c.BaseAddress = new Uri("http://python-inference"));
 
+        services.AddScoped<IEmbeddingService, EmbeddingService>();
+
         services.AddSingleton<IPricingService, PricingService>();
 
         services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<GetTicketResponseItem, Ticket>>(
@@ -81,7 +83,7 @@ public static class TicketingModule
 
         return services;
     }
-    
+
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration) =>
         services
             .AddDbContext<TicketingDbContext>(Postgres.StandardOptions(configuration, Schemas.Ticketing))
@@ -91,7 +93,9 @@ public static class TicketingModule
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IMessageRepository, MessageRepository>()
             .AddScoped<IOrderRepository, OrderRepository>()
-            .AddScoped<ITicketRepository, TicketRepository>();
+            .AddScoped<ITicketRepository, TicketRepository>()
+            .AddScoped<IProductBrandRepository, ProductBrandRepository>()
+            .AddScoped<IProductTypeRepository, ProductTypeRepository>();
 
     private static IServiceCollection AddOutbox(this IServiceCollection services, IConfiguration configuration) =>
         services

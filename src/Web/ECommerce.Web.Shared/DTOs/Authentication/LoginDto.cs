@@ -7,4 +7,6 @@ public sealed class LoginDto
     public string? LimitedToken { get; init; }
 
     public AccessTokensDto? AccessTokens { get; init; }
+
+    public string? Error { get; set; }
 }

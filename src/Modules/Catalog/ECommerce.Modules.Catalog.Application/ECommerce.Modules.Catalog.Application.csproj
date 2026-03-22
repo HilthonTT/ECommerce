@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\ECommerce.Common.Application\ECommerce.Common.Application.csproj" />
     <ProjectReference Include="..\ECommerce.Modules.Catalog.Domain\ECommerce.Modules.Catalog.Domain.csproj" />
+    <ProjectReference Include="..\ECommerce.Modules.Catalog.IntegrationEvents\ECommerce.Modules.Catalog.IntegrationEvents.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,7 +8,7 @@ namespace Aspire.Hosting;
 
 internal static class OllamaResourceExtensions
 {
-    public static IResourceBuilder<OllamaResource> AddOllama(this IDistributedApplicationBuilder builder, string name, string[]? models = null, string? defaultModel = null, bool enableGpu = true, int? port = null)
+    public static IResourceBuilder<OllamaResource> AddOllamaOld(this IDistributedApplicationBuilder builder, string name, string[]? models = null, string? defaultModel = null, bool enableGpu = true, int? port = null)
     {
         const string configKey = "OllamaModel";
         defaultModel ??= builder.Configuration[configKey];

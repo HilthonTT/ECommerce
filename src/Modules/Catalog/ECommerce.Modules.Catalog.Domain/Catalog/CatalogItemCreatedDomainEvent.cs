@@ -7,11 +7,17 @@ public sealed class CatalogItemCreatedDomainEvent(
     string name,
     decimal price,
     Guid catalogTypeId,
-    Guid catalogBrandId) : DomainEvent
+    Guid catalogBrandId,
+    int availableStock,
+    int restockThreshold,
+    int maxStockThreshold) : DomainEvent
 {
     public int CatalogItemId { get; } = catalogItemId;
     public string Name { get; } = name;
     public decimal Price { get; } = price;
     public Guid CatalogTypeId { get; } = catalogTypeId;
     public Guid CatalogBrandId { get; } = catalogBrandId;
+    public int AvailableStock { get; } = availableStock;
+    public int RestockThreshold { get; } = restockThreshold;
+    public int MaxStockThreshold { get; } = maxStockThreshold;
 }

@@ -1,8 +1,8 @@
-﻿using ECommerce.Modules.Users.Application.Abstractions.Identity;
+﻿using ECommerce.Common.Domain;
+using ECommerce.Modules.Users.Application.Abstractions.Identity;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http.Json;
-using System.Security.Authentication;
 
 namespace ECommerce.Modules.Users.Infrastructure.Identity;
 
@@ -12,7 +12,7 @@ internal sealed class KeyCloakTokenClient(
 {
     private readonly KeyCloakOptions _options = options.Value;
 
-    internal Task<AccessTokensResponse> LoginUserAsync(
+    internal Task<Result<AccessTokensResponse>> LoginUserAsync(
         LoginRepresentation login,
         CancellationToken cancellationToken = default)
     {
@@ -28,7 +28,7 @@ internal sealed class KeyCloakTokenClient(
         return RequestTokenAsync(authRequestParameters, cancellationToken);
     }
 
-    internal Task<AccessTokensResponse> RefreshTokenAsync(
+    internal Task<Result<AccessTokensResponse>> RefreshTokenAsync(
         string refreshToken,
         CancellationToken cancellationToken = default)
     {
@@ -42,7 +42,7 @@ internal sealed class KeyCloakTokenClient(
         return RequestTokenAsync(authRequestParameters, cancellationToken);
     }
 
-    private async Task<AccessTokensResponse> RequestTokenAsync(
+    private async Task<Result<AccessTokensResponse>> RequestTokenAsync(
         KeyValuePair<string, string>[] parameters,
         CancellationToken cancellationToken)
     {
@@ -56,16 +56,19 @@ internal sealed class KeyCloakTokenClient(
 
         if (!response.IsSuccessStatusCode)
         {
-            string errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            throw response.StatusCode switch
+            return response.StatusCode switch
             {
-                HttpStatusCode.Unauthorized => new AuthenticationException("Invalid credentials"),
-                HttpStatusCode.BadRequest => new InvalidOperationException($"Invalid request: {errorContent}"),
-                _ => new HttpRequestException($"Keycloak request failed: {response.StatusCode}")
+                HttpStatusCode.Unauthorized => IdentityProviderErrors.InvalidCredentials,
+                HttpStatusCode.BadRequest => IdentityProviderErrors.InvalidRefreshToken,
+                _ => IdentityProviderErrors.AuthenticationFailed
             };
         }
 
-        return await response.Content.ReadFromJsonAsync<AccessTokensResponse>(cancellationToken)
-            ?? throw new InvalidOperationException("Failed to deserialize token response");
+        AccessTokensResponse? tokens = await response.Content
+            .ReadFromJsonAsync<AccessTokensResponse>(cancellationToken);
+
+        return tokens is not null
+            ? tokens
+            : IdentityProviderErrors.TokenDeserializationFailed;
     }
 }

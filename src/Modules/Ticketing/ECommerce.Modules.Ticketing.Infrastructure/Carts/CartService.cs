@@ -61,5 +61,22 @@ internal sealed class CartService(ICacheService cacheService) : ICartService
         await cacheService.SetAsync(cacheKey, cart, DefaultExpiration, cancellationToken);
     }
 
+    public async Task UpdateQuantityAsync(Guid customerId, int productId, int quantity, CancellationToken cancellationToken = default)
+    {
+        string cacheKey = CreateCacheKey(customerId);
+
+        Cart cart = await GetAsync(customerId, cancellationToken);
+
+        CartItem? cartItem = cart.Items.FirstOrDefault(i => i.ProductId == productId);
+        if (cartItem is null)
+        {
+            return;
+        }
+
+        cartItem.Quantity = quantity;
+
+        await cacheService.SetAsync(cacheKey, cart, DefaultExpiration, cancellationToken);
+    }
+
     private static string CreateCacheKey(Guid customerId) => $"carts:{customerId}";
 }

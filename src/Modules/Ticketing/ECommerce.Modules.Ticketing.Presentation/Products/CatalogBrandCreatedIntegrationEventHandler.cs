@@ -9,7 +9,7 @@ internal sealed class CatalogBrandCreatedIntegrationEventHandler(ICommandHandler
     : IntegrationEventHandler<CatalogBrandCreatedIntegrationEvent>
 {
     public override async Task Handle(
-        CatalogBrandCreatedIntegrationEvent integrationEvent, 
+        CatalogBrandCreatedIntegrationEvent integrationEvent,
         CancellationToken cancellationToken = default)
     {
         await handler.Handle(

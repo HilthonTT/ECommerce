@@ -1,7 +1,6 @@
 ﻿using ECommerce.Common.Domain;
 using ECommerce.Modules.Users.Application.Abstractions.Identity;
 using Microsoft.Extensions.Logging;
-using System.Net;
 
 namespace ECommerce.Modules.Users.Infrastructure.Identity;
 
@@ -20,35 +19,24 @@ internal sealed class KeyCloakIdentityProviderService(
             login.Email,
             login.Password);
 
-        try
-        {
-            AccessTokensResponse tokens = await keyCloakTokenClient.LoginUserAsync(
-                loginRepresentation,
-                cancellationToken);
+        Result<AccessTokensResponse> result = await keyCloakTokenClient.LoginUserAsync(
+            loginRepresentation,
+            cancellationToken);
 
-            return tokens;
-        }
-        catch (HttpRequestException exception) when (exception.StatusCode == HttpStatusCode.Unauthorized)
+        if (result.IsFailure)
         {
             logger.LogWarning(
-                exception,
-                "Login failed for user {Email}",
-                login.Email);
-
-            return Result.Failure<AccessTokensResponse>(IdentityProviderErrors.InvalidCredentials);
+                "Login failed for user {Email}: {Error}",
+                login.Email,
+                result.Error.Code);
         }
-        catch (HttpRequestException exception)
-        {
-            logger.LogError(
-                exception,
-                "Login request failed for user {Email}",
-                login.Email);
 
-            return Result.Failure<AccessTokensResponse>(IdentityProviderErrors.AuthenticationFailed);
-        }
+        return result;
     }
 
-    public async Task<Result<string>> RegisterUserAsync(UserModel user, CancellationToken cancellationToken = default)
+    public async Task<Result<string>> RegisterUserAsync(
+        UserModel user,
+        CancellationToken cancellationToken = default)
     {
         var userRepresentation = new UserRepresentation(
             user.Email,
@@ -63,11 +51,13 @@ internal sealed class KeyCloakIdentityProviderService(
 
         try
         {
-            var identityId = await keyCloakAdminClient.RegisterUserAsync(userRepresentation, cancellationToken);
+            string identityId = await keyCloakAdminClient.RegisterUserAsync(
+                userRepresentation, cancellationToken);
+
             return identityId;
         }
-        catch (HttpRequestException exception) 
-            when (exception.StatusCode == HttpStatusCode.Conflict)
+        catch (HttpRequestException exception)
+            when (exception.StatusCode == System.Net.HttpStatusCode.Conflict)
         {
             logger.LogError(exception, "User registration failed");
 
@@ -79,29 +69,17 @@ internal sealed class KeyCloakIdentityProviderService(
         string refreshToken,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            AccessTokensResponse tokens = await keyCloakTokenClient.RefreshTokenAsync(
-                refreshToken,
-                cancellationToken);
+        Result<AccessTokensResponse> result = await keyCloakTokenClient.RefreshTokenAsync(
+            refreshToken,
+            cancellationToken);
 
-            return Result.Success(tokens);
-        }
-        catch (HttpRequestException exception) when (exception.StatusCode == HttpStatusCode.BadRequest)
+        if (result.IsFailure)
         {
             logger.LogWarning(
-                exception,
-                "Token refresh failed - invalid or expired refresh token");
-
-            return Result.Failure<AccessTokensResponse>(IdentityProviderErrors.InvalidRefreshToken);
+                "Token refresh failed: {Error}",
+                result.Error.Code);
         }
-        catch (HttpRequestException exception)
-        {
-            logger.LogError(
-                exception,
-                "Token refresh request failed");
 
-            return Result.Failure<AccessTokensResponse>(IdentityProviderErrors.TokenRefreshFailed);
-        }
+        return result;
     }
 }

@@ -10,9 +10,9 @@ public static class IdentityProviderErrors
             "The specified email is not unique");
 
     public static readonly Error InvalidCredentials =
-     Error.Problem(
-         "Identity.InvalidCredentials",
-         "The provided credentials are invalid");
+         Error.Problem(
+             "Identity.InvalidCredentials",
+             "The provided credentials are invalid");
 
     public static readonly Error AuthenticationFailed =
         Error.Problem(
@@ -28,4 +28,8 @@ public static class IdentityProviderErrors
         Error.Problem(
             "Identity.TokenRefreshFailed",
             "Token refresh request failed");
+
+    public static readonly Error TokenDeserializationFailed = Error.Failure(
+        "Identity.TokenDeserializationFailed",
+        "Failed to deserialize the token response from the identity provider.");
 }

@@ -31,4 +31,17 @@ internal sealed class CartService(AuthenticatedHttpClient client) : ICartService
         var response = await client.PutAsJsonAsync("/api/v1/carts/remove", new { productId }, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
+
+    public async Task UpdateQuantityAsync(
+        int productId,
+        int quantity,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await client.PutAsJsonAsync(
+            "/api/v1/carts/update-quantity",
+            new { productId, quantity },
+            cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+    }
 }

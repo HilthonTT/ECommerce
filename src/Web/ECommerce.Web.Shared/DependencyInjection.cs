@@ -30,6 +30,8 @@ public static class DependencyInjection
         services.AddScoped<ICartService, CartService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+        services.AddScoped<CartStateService>();
+
         return services;
     }
 }

@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/hilthontt/ecommerce/proxy/internal/balancer"
+	"github.com/hilthontt/ecommerce/proxy/internal/cache"
 	"github.com/hilthontt/ecommerce/proxy/internal/config"
 	"github.com/hilthontt/ecommerce/proxy/internal/profiler"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -94,9 +95,11 @@ func main() {
 		w.Write([]byte("Configuration reloaded successfully"))
 	})
 
+	responseCache := cache.NewResponseCache()
+
 	server := &http.Server{
 		Addr:         cfg.ListenAddr,
-		Handler:      mux,
+		Handler:      responseCache.Middleware(mux),
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  60 * time.Second,

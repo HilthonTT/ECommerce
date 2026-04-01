@@ -1,9 +1,11 @@
 ﻿using ECommerce.Common.Application.DTOs;
+using ECommerce.Common.Application.Links;
 using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Application.Sorting;
 using ECommerce.Common.Domain;
 using ECommerce.Modules.Catalog.Application.Abstractions.Data;
 using ECommerce.Modules.Catalog.Domain.Catalog;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 
@@ -11,7 +13,8 @@ namespace ECommerce.Modules.Catalog.Application.Catalog.GetItems;
 
 internal sealed class GetCatalogItemsQueryHandler(
     IDbContext dbContext,
-    ISortMappingProvider sortMappingProvider)
+    ISortMappingProvider sortMappingProvider,
+    ILinkService linkService)
     : IQueryHandler<GetCatalogItemsQuery, PaginationResult<CatalogItemResponse>>
 {
     public async Task<Result<PaginationResult<CatalogItemResponse>>> Handle(
@@ -38,11 +41,15 @@ internal sealed class GetCatalogItemsQueryHandler(
                 .ApplySort(query.Sort, sortMappings)
                 .Select(CatalogItemMappings.ProjectToResponse());
 
-        return await PaginationResult<CatalogItemResponse>.CreateAsync(
+        var result = await PaginationResult<CatalogItemResponse>.CreateAsync(
             responseQuery,
             query.Page,
             query.PageSize,
             cancellationToken);
+
+        result.Links.AddRange(CreateLinks(query, result));
+
+        return result;
     }
 
     private static IQueryable<CatalogItemResponse> BuildTextSearchQuery(
@@ -53,4 +60,47 @@ internal sealed class GetCatalogItemsQueryHandler(
             .OrderByDescending(c => c.SearchVector.Rank(EF.Functions.PlainToTsQuery("english", searchTerm)))
             .ThenBy(c => c.Id)
             .Select(CatalogItemMappings.ProjectToResponse());
+
+    private List<LinkDto> CreateLinks(GetCatalogItemsQuery query, PaginationResult<CatalogItemResponse> result)
+    {
+        var links = new List<LinkDto>
+        {
+            linkService.CreateForEndpoint(
+                CatalogEndpointNames.GetItems,
+                "self",
+                HttpMethods.Get,
+                ToRouteValues(query, query.Page))
+        };
+
+        if (result.HasPreviousPage)
+        {
+            links.Add(linkService.CreateForEndpoint(
+                CatalogEndpointNames.GetItems,
+                "previous-page",
+                HttpMethods.Get,
+                ToRouteValues(query, query.Page - 1)));
+        }
+
+        if (result.HasNextPage)
+        {
+            links.Add(linkService.CreateForEndpoint(
+                CatalogEndpointNames.GetItems,
+                "next-page",
+                HttpMethods.Get,
+                ToRouteValues(query, query.Page + 1)));
+        }
+
+        return links;
+    }
+
+    private static object ToRouteValues(GetCatalogItemsQuery query, int page) =>
+        new
+        {
+            page,
+            pageSize = query.PageSize,
+            q = query.SearchTerm,
+            sort = query.Sort,
+            catalogTypeId = query.CatalogTypeId,
+            catalogBrandId = query.CatalogBrandId
+        };
 }

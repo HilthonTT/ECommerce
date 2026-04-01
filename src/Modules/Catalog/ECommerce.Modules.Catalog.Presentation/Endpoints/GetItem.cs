@@ -21,6 +21,7 @@ internal sealed class GetItem : IEndpoint
             var result = await handler.Handle(new GetCatalogItemQuery(id), cancellationToken);
             return result.Match(Results.Ok, ApiResults.Problem);
         })
+        .WithName(CatalogEndpointNames.GetItemById)
         .WithTags(Tags.Catalog);
     }
 }

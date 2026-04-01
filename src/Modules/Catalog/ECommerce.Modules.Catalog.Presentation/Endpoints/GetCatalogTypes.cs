@@ -21,6 +21,7 @@ internal sealed class GetCatalogTypes : IEndpoint
             var result = await handler.Handle(new GetCatalogTypesQuery(), cancellationToken);
             return result.Match(Results.Ok, ApiResults.Problem);
         })
+        .WithName(CatalogEndpointNames.GetCatalogTypes)
         .WithTags(Tags.Catalog);
     }
 }

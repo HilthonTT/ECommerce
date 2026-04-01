@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ECommerce.Common.Application.DTOs;
 
-public sealed record PaginationResult<T> : ICollectionResponse<T>
+public sealed record PaginationResult<T> : ICollectionResponse<T>, ILinksResponse
 {
     [JsonConstructor]
     private PaginationResult()
@@ -17,6 +17,8 @@ public sealed record PaginationResult<T> : ICollectionResponse<T>
     public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
     public bool HasPreviousPage => Page > 1;
     public bool HasNextPage => Page < TotalPages;
+
+    public List<LinkDto> Links { get; init; } = [];
 
     public static async Task<PaginationResult<T>> CreateAsync(
         IQueryable<T> source, 

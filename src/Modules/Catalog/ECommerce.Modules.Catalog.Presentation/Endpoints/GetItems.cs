@@ -30,6 +30,7 @@ internal sealed class GetItems : IEndpoint
                 cancellationToken);
             return result.Match(Results.Ok, ApiResults.Problem);
         })
+        .WithName(CatalogEndpointNames.GetItems)
         .WithTags(Tags.Catalog);
     }
 }

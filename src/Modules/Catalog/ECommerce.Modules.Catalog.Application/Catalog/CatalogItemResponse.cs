@@ -1,6 +1,8 @@
-﻿namespace ECommerce.Modules.Catalog.Application.Catalog;
+﻿using ECommerce.Common.Application.DTOs;
 
-public sealed record CatalogItemResponse
+namespace ECommerce.Modules.Catalog.Application.Catalog;
+
+public sealed record CatalogItemResponse : ILinksResponse
 {
     public int Id { get; init; }
 
@@ -27,4 +29,6 @@ public sealed record CatalogItemResponse
     public int MaxStockThreshold { get; init; }
 
     public bool OnReorder { get; init; }
+
+    public List<LinkDto> Links { get; init; } = [];
 }

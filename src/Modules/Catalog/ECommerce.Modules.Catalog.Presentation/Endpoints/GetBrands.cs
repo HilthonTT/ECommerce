@@ -21,6 +21,7 @@ internal sealed class GetBrands : IEndpoint
             var result = await handler.Handle(new GetBrandsQuery(), cancellationToken);
             return result.Match(Results.Ok, ApiResults.Problem);
         })
+        .WithName(CatalogEndpointNames.GetBrands)
         .WithTags(Tags.Catalog);
     }
 }

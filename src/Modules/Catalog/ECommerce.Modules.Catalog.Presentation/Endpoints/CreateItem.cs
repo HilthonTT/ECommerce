@@ -46,6 +46,7 @@ internal sealed class CreateItem : IEndpoint
 
             return result.Match(Results.Ok, ApiResults.Problem);
         })
+        .WithName(CatalogEndpointNames.CreateItem)
         .WithTags(Tags.Catalog)
         .RequireAuthorization(Permissions.CreateItem);
     }

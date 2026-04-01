@@ -1,6 +1,7 @@
 ﻿using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Presentation.ApiResults;
 using ECommerce.Common.Presentation.Endpoints;
+using ECommerce.Modules.Catalog.Application.Catalog;
 using ECommerce.Modules.Catalog.Application.Catalog.DeleteItem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -24,6 +25,7 @@ internal sealed class DeleteItem : IEndpoint
             return result.Match(Results.NoContent, ApiResults.Problem);
         })
         .WithTags(Tags.Catalog)
+        .WithName(CatalogEndpointNames.DeleteItem)
         .RequireAuthorization(Permissions.RemoveItem);
     }
 }

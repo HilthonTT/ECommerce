@@ -1,13 +1,15 @@
 ﻿using Dapper;
 using ECommerce.Common.Application.Data;
 using ECommerce.Common.Application.DTOs;
+using ECommerce.Common.Application.Links;
 using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Domain;
+using Microsoft.AspNetCore.Http;
 using System.Data.Common;
 
 namespace ECommerce.Modules.Catalog.Application.Catalog.GetTypes;
 
-internal sealed class GetCatalogTypesQueryHandler(IDbConnectionFactory dbConnectionFactory) 
+internal sealed class GetCatalogTypesQueryHandler(IDbConnectionFactory dbConnectionFactory, ILinkService linkService) 
     : IQueryHandler<GetCatalogTypesQuery, CollectionResponse<CatalogTypeResponse>>
 {
     public async Task<Result<CollectionResponse<CatalogTypeResponse>>> Handle(
@@ -24,11 +26,15 @@ internal sealed class GetCatalogTypesQueryHandler(IDbConnectionFactory dbConnect
             ORDER BY type
             """;
 
-        var brands = await connection.QueryAsync<CatalogTypeResponse>(sql);
+        var types = await connection.QueryAsync<CatalogTypeResponse>(sql);
 
         return new CollectionResponse<CatalogTypeResponse>
         {
-            Items = brands.ToList(),
+            Items = types.ToList(),
+            Links =
+            [
+                linkService.CreateForEndpoint(CatalogEndpointNames.GetCatalogTypes, "self", HttpMethods.Get)
+            ]
         };
     }
 }

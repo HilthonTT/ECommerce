@@ -1,6 +1,7 @@
 ﻿using ECommerce.Common.Application.Messaging;
 using ECommerce.Common.Presentation.ApiResults;
 using ECommerce.Common.Presentation.Endpoints;
+using ECommerce.Modules.Catalog.Application.Catalog;
 using ECommerce.Modules.Catalog.Application.Catalog.UpdateItem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +28,7 @@ internal sealed class UpdateItem : IEndpoint
             return result.Match(Results.NoContent, ApiResults.Problem);
         })
         .WithTags(Tags.Catalog)
+        .WithName(CatalogEndpointNames.UpdateItem)
         .RequireAuthorization(Permissions.UpdateItem);
     }
 }
